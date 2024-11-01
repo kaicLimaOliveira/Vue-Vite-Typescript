@@ -1,0 +1,78 @@
+:root {
+  --info: hsl(204, 86%, 53%);
+  --link: #dc3545;
+  --error: rgb(241, 70, 104);
+  --warning: hsl(44deg, 100%, 77%);
+  --success: rgb(76, 230, 145);
+  
+  --grey-300: #f1f1f1;
+  --grey-400: #ebebeb;
+  --grey-500: #e2e2e2;
+  --grey-600: #cecece;
+
+  --black-700: #242427;
+  --black-800: #1a1a1e;
+
+  --blue-200: #e7f5f8;
+  --blue-300: #d6f8ff;
+  --blue-400: #00c0e8;
+  --blue-500: #19b5c9;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: #f9fbfd;
+  overflow: hidden !important;
+
+  #app {
+    font-family: 'Montserrat', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    div {
+      transition: 0.3s;
+
+      .component {
+        padding: 20px 20px 35px 20px;
+      }
+
+      .component-without-navbar {
+        height: 100vh;
+      }
+    }
+  }
+}
+
+.info {
+  background-color: var(--info);
+}
+
+.error {
+  background-color: var(--error);
+}
+
+.success {
+  background-color: var(--success);
+}
+
+.warning {
+  background-color: var(--warning);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
