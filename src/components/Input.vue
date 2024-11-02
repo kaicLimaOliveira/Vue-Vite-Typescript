@@ -61,6 +61,9 @@ const modelValue = ref(props.modelValue);
       padding: 0.5rem 1rem;
       width: 100%;
       transition: border-color 0.2s;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'Montserrat';
 
       &:focus {
         /* border-color: #00d1b2; */

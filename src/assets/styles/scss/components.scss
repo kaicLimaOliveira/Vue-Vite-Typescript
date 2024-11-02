@@ -2,7 +2,7 @@
   position: absolute;
   max-width: 20rem;
   width: 16rem;
-  z-index: 50;
+  z-index: 1;
   border-radius: 0.25rem;
   background-color: #ffffff;
   color: #000000;
@@ -14,6 +14,7 @@
 
   &.fade-in {
     opacity: 1; 
+    z-index: 50;
   }
 
   @media (min-width: 640px) {

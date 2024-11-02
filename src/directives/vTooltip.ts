@@ -1,4 +1,8 @@
 import { DirectiveBinding } from "vue";
+import { useWindowSize } from "../composables/useWindowSize";
+
+const { width, height } = useWindowSize();
+const TOOLTIP_MARGIN = 10; // Margem entre o elemento e o tooltip
 
 enum Position {
   Left = "left",
@@ -20,20 +24,29 @@ export default {
   mounted(element: HTMLElement, binding: DirectiveBinding<string>) {
     const tooltipContent = binding.value;
     const modifiers = binding.modifiers;
-    const position = getPositionFromModifiers(modifiers);
-      
+    const positionByModifier = getPositionFromModifiers(modifiers);
+
     const tooltipParent = document.createElement("div");
     tooltipParent.style.position = "relative";
-    const tooltip = document.createElement("div");
 
+    const tooltip = document.createElement("div");
     tooltip.textContent = tooltipContent;
-    tooltip.className = applyTooltipClasses(position);
+    tooltip.className = "tooltip";
+    tooltip.style.position = "absolute";
     tooltipParent.appendChild(tooltip);
-    
-    const mouseEnterHandler = () => tooltip.classList.add("fade-in");
-    const mouseLeaveHandler = () => tooltip.classList.remove("fade-in");
-    
+
     element.insertAdjacentElement("afterend", tooltipParent);
+
+    const mouseEnterHandler = () => {
+      const position = positionByModifier || calculatePosition(element, tooltip);
+      applyTooltipPosition(tooltip, element, position);
+      tooltip.classList.add("fade-in");
+    };
+
+    const mouseLeaveHandler = () => {
+      tooltip.classList.remove("fade-in");
+    };
+
     element.addEventListener("mouseenter", mouseEnterHandler);
     element.addEventListener("mouseleave", mouseLeaveHandler);
     
@@ -43,21 +56,14 @@ export default {
     };
   },
   unmounted(element: HTMLElement) {
-    const { mouseEnterHandler, mouseLeaveHandler } = 
-      element.tooltipHandlers as {
-        mouseEnterHandler: () => void;
-        mouseLeaveHandler: () => void;
-      };
-
+    const { mouseEnterHandler, mouseLeaveHandler } = element.tooltipHandlers || {};
     if (mouseEnterHandler && mouseLeaveHandler) {
       element.removeEventListener("mouseenter", mouseEnterHandler);
       element.removeEventListener("mouseleave", mouseLeaveHandler);
     }
-    
     delete element.tooltipHandlers;
   },
 };
-
 
 function getPositionFromModifiers(modifiers: Record<string, boolean>) {
   if (modifiers.left) return Position.Left;
@@ -66,24 +72,39 @@ function getPositionFromModifiers(modifiers: Record<string, boolean>) {
   return Position.Right;
 }
 
+function calculatePosition(element: HTMLElement, tooltip: HTMLElement): Position {
+  const rect = element.getBoundingClientRect();
 
-function applyTooltipClasses(position: string) {
-  const defaultClasses = "tooltip";
-  let classes = defaultClasses;
+  const hasSpaceLeft = rect.left >= tooltip.offsetWidth + TOOLTIP_MARGIN;
+  const hasSpaceRight = width.value - rect.right >= tooltip.offsetWidth + TOOLTIP_MARGIN;
+  const hasSpaceBottom = height.value - rect.bottom >= tooltip.offsetHeight + TOOLTIP_MARGIN;
 
+  if (hasSpaceRight) return Position.Right;
+  if (hasSpaceLeft) return Position.Left;
+  if (hasSpaceBottom) return Position.Bottom;
+  return Position.Top;
+}
+
+function applyTooltipPosition(tooltip: HTMLElement, element: HTMLElement, position: Position) {
+  const rect = element.getBoundingClientRect();
+  tooltip.style.left = tooltip.style.top = tooltip.style.right = tooltip.style.bottom = "";
+  
   switch (position) {
     case Position.Left:
-      classes += " -left-32 top-1";
+      tooltip.style.transform = 'translateX(-240%)';
+      tooltip.style.top = `23px`;
       break;
     case Position.Right:
-      classes += " left-10 -top-4";
+      tooltip.style.transform = 'translateX(200%)';
+      tooltip.style.bottom = `20px`;
       break;
     case Position.Top:
-      classes += " -top-8";
+      tooltip.style.top = `${rect.top - tooltip.offsetHeight - TOOLTIP_MARGIN}px`;
+      tooltip.style.left = `${rect.left + rect.width / 2 - tooltip.offsetWidth / 2}px`;
       break;
-    default:
-      classes += "";
+    case Position.Bottom:
+      tooltip.style.top = `${rect.bottom + TOOLTIP_MARGIN}px`;
+      tooltip.style.left = `${rect.left + rect.width / 2 - tooltip.offsetWidth / 2}px`;
+      break;
   }
-
-  return classes;
 }
