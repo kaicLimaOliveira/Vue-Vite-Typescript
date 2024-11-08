@@ -40,7 +40,6 @@ function applyMask(value: string, pattern: string): string {
 
 const closure = (args: Args) => {
   const format = (event: Event) => {
-    event.preventDefault();
     const inputElement = event.target as HTMLInputElement;
     const inputValue = inputElement.value.replace(/[^\d]/g, '');
     const maskedValue = applyMask(inputValue, args.binding.value);
@@ -63,12 +62,12 @@ export default {
     el.addEventListener('input', formatInput);
     el._formatInput = formatInput;
   },
-  // updated(el: CustomInputElement, binding: DirectiveBinding<string>) {
-  //   const formatInput = closure({ el, binding });
+  updated(el: CustomInputElement, binding: DirectiveBinding<string>) {
+    // const formatInput = closure({ el, binding });
     
-  //   el.addEventListener('input', formatInput);
-  //   el._formatInput = formatInput;
-  // },
+    // el.addEventListener('input', formatInput);
+    // el._formatInput = formatInput;
+  },
   beforeUnmount(el: CustomInputElement) {
     if (el._formatInput) el.removeEventListener('input', el._formatInput);
   },

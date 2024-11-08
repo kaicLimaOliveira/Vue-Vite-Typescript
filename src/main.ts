@@ -9,7 +9,7 @@ import vMask from './directives/vMask';
 import vTooltip from './directives/vTooltip';
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import Input from './components/Input.vue'
+import Input from './components/Form/Input.vue'
 
 
 const pinia = createPinia()

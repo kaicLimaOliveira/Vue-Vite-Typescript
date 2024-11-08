@@ -15,7 +15,7 @@
 
 <script lang="ts" setup>
 import { useAttrs } from 'vue';
-import { ref, defineProps } from 'vue';
+import { ref } from 'vue';
 
 interface InputProps {
   id?: string;
@@ -24,9 +24,7 @@ interface InputProps {
   modelValue: string;
 }
 
-const props = withDefaults(defineProps<InputProps>(), {
-  
-})
+const props = withDefaults(defineProps<InputProps>(), {})
 
 const attrs = useAttrs();
 

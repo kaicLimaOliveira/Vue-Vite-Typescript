@@ -10,7 +10,12 @@ export const useNavbarStore = defineStore('navbar', {
     getAvailableNavbarRoutes(): Menu {
       const router = useRouter();
       const routes = router?.options.routes;
-      const excludedRoutes = ['NotFound', 'Home', 'NotificationsHistory'];
+      const excludedRoutes = [
+        'NotFound', 
+        'Home', 
+        'NotificationsHistory', 
+        'Login'
+      ];
       
       const navbarRoutes: Menu = routes
         .filter(route => !excludedRoutes.includes(route.name as string))

@@ -1,35 +1,17 @@
 <template>
   <div>
-    <Input 
-      type="text"
-      label="Normal" 
-      v-model="state.cpf"  
-      v-mask="state.toggle ? '###.###.###-##' : '(##) #####-####'"
-    />
-
-    <button @click="state.toggle = !state.toggle">teste</button>
-
-    <Input 
-      type="text"
-      label="Right" 
-      v-model="state.cpf"  
-      v-mask="'(##) #####-####'"
-    /> 
-
-    <div style="display: flex; justify-content: end;">
-      <Input 
-        type="text"
-        label="Left" 
-        v-model="state.cpf"  
-      />
-    </div>
+    <FormControl v-model="state.cpf" label="Teste" v-mask="'###.###.###-##'"  />
+    <FormControl v-model="state.mask" label="Teste" v-mask="'###.###'"  />
   </div>
 </template>
 
 <script setup lang="ts">
 import { reactive } from 'vue';
+import FormControl from '../components/Form/FormControl.vue';
 
 const state = reactive({
+  valueMask: "",
+  mask: "",
   cpf: "",
   toggle: true,
 })

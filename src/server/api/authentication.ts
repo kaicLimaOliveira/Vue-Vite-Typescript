@@ -2,7 +2,7 @@ import { useFetch } from "../../composables/useFetch";
 import { HttpResponse } from "../../interfaces/Http";
 import { useLoadingStore } from "../../stores/loadingStore";
 
-class NotificationService {
+class AuthenticationService {
   private fetchData: ReturnType<typeof useFetch>['fetchData'];
   private error: ReturnType<typeof useFetch>['error'];
   private result: ReturnType<typeof useFetch>['result'];
@@ -15,9 +15,9 @@ class NotificationService {
     this.result = result;
   }
 
-  async getNotifications(params: string = ''): HttpResponse<Notification> {
+  async login(data: object): HttpResponse<any> {
     this.loadingStore.isLoading = true;
-    await this.fetchData('get', `notifications/?${params}`);
+    await this.fetchData('post', 'login', data);
     this.loadingStore.isLoading = false;
   
     return {
@@ -26,8 +26,8 @@ class NotificationService {
     };
   }
   
-  async updateNotificationAsSeen(id: number, data: object) {
-    await this.fetchData('patch', `notifications/${id}/seen`, data);
+  async logout() {
+    await this.fetchData('post', 'logout');
   
     return {
       error: this.error,
@@ -37,4 +37,4 @@ class NotificationService {
 }
 
 
-export default NotificationService;
+export default AuthenticationService;

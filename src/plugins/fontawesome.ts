@@ -5,10 +5,18 @@ import {
     faBars,
     faUser,
     faBell,
+    faEye,
+    faEyeSlash,
+    faGear,
+    faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
     faBars,
     faUser,
     faBell,
+    faEye,
+    faEyeSlash,
+    faGear,
+    faRightFromBracket,
 );

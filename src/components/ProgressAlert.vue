@@ -4,7 +4,8 @@
       <div 
         v-for="alert, key in alertStore.alerts" :key="key" 
         class="alert-container"
-        @click="alertStore.remove(alert)"
+        data-test="alert-remove"
+        @click.stop="alertStore.remove(alert)"
         :class="alert.type"
       >
         <div class="alert-container-columns">

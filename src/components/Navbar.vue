@@ -45,7 +45,7 @@
         </div>
 
         <div>
-          <!-- dark mode e options -->
+          <DropdownHover  />
         </div>
       </header>
       
@@ -62,6 +62,7 @@ import Dropdown from "./Dropdown.vue";
 import { reactive, ref } from "vue";
 import { Menu } from "../interfaces/Menu"
 import NotificationsBell from "./NotificationsBell.vue";
+import DropdownHover from "./Dropdowns/DropdownHover.vue";
  
  
 const sideBarState = ref(localStorage.getItem('sideBar') || 'opened')

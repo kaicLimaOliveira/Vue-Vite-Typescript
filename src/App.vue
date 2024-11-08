@@ -49,5 +49,6 @@ const state = reactive({
 
 <style lang="scss">
 @import './assets/styles/scss/globals.scss';
-@import './assets/styles/scss/components.scss';
+@import './assets/styles/scss/tooltip.scss';
+@import './assets/styles/scss/helpers.scss';
 </style>
