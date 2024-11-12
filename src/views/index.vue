@@ -1,7 +1,6 @@
 <template>
   <div>
-    <FormControl v-model="state.cpf" label="Teste" v-mask="'###.###.###-##'"  />
-    <FormControl v-model="state.mask" label="Teste" v-mask="'###.###'"  />
+    <FormControl label="teste" v-model="state.cpf" v-mask="'###.###.###-##'" />
   </div>
 </template>
 

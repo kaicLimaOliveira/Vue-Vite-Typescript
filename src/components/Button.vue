@@ -18,17 +18,10 @@
 
 <script setup lang="ts">
 import { computed, useAttrs } from 'vue';
+import { ButtonProps } from '../interfaces/Components';
 
 
-const props = defineProps<{
-  type?: 'primary' | 'link' | 'info' | 'success' | 'warning' | 'danger';
-  size?: 'small' | 'normal' | 'medium' | 'large';
-  loading?: boolean;
-  disabled?: boolean;
-  fullwidth?: boolean;
-  outlined?: boolean;
-}>();
-
+const props = defineProps<ButtonProps>();
 
 const emits = defineEmits<{
   (e: 'click'): void;

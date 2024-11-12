@@ -59,6 +59,7 @@ const deactivateDropdown = () => {
     .button {
       border: none;
       cursor: pointer;
+      background: none;
 
       .icon {
         margin-left: 0.5rem;

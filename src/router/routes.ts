@@ -40,8 +40,7 @@ const routes: RouteRecordRaw[] = [
     meta: {
       requiresAuth: true,
       enableNav: true,
-      translatedName: 'Usuários',
-      icon: 'user'
+      translatedName: 'Usuários'
     },
   },
   {
@@ -52,6 +51,16 @@ const routes: RouteRecordRaw[] = [
       requiresAuth: false,
       enableNav: false,
       translatedName: 'Login',
+    },
+  },
+  {
+    path: "/recuperacao-de-senha",
+    name: "ForgottenPassword",
+    component: () => import("../views/forgotten-password.vue"),
+    meta: {
+      requiresAuth: false,
+      enableNav: false,
+      translatedName: 'Recuperação de senha',
     },
   },
   {
@@ -76,9 +85,9 @@ router.beforeEach(async (to, from) => {
   document.title = to.meta.translatedName
   const authStore = useAuthStore()
 
-  if (to.meta.requiresAuth) {
-    authStore.isLoggedIn = true
-  }
+  // if (to.meta.requiresAuth && !authStore.isLoggedIn) {
+  //   authStore.isLoggedIn = true
+  // }
 })
 
 

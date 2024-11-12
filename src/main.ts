@@ -10,19 +10,21 @@ import vTooltip from './directives/vTooltip';
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Input from './components/Form/Input.vue'
+import Button from './components/Button.vue';
 
 
-const pinia = createPinia()
+const pinia = createPinia();
 const app = createApp(App);
 
-app.component('Icon', FontAwesomeIcon)
-app.component('Input', Input)
+app.component('Icon', FontAwesomeIcon);
+app.component('Input', Input);
+app.component('Button', Button);
 
 // Directives
 app.directive('mask', vMask);
 app.directive('tooltip', vTooltip);
 
 
-app.use(pinia)
-app.use(router)
-app.mount('#app')
+app.use(pinia);
+app.use(router);
+app.mount('#app');

@@ -6,6 +6,9 @@
   --success: rgb(76, 230, 145);
 
   --primary-color: #6c63ff;
+  --text-muted: #7a7a7a;
+
+
   --link-color: #3273dc;
   --info-color: #209cee;
   --success-color: #23d160;
@@ -13,7 +16,7 @@
   --danger-color: #ff3860;
   
   --grey-300: #f1f1f1;
-  --grey-400: #ebebeb;
+  --grey-400: #efefef;
   --grey-500: #e2e2e2;
   --grey-600: #cecece;
 
@@ -45,7 +48,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
 
     div {
-      transition: 0.3s;
+      transition: 0.1s;
 
       .component {
         padding: 20px 20px 35px 20px;

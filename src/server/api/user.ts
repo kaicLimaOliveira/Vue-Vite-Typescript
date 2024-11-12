@@ -11,7 +11,7 @@ class UserService {
   private loadingStore = useLoadingStore();
 
   constructor() {
-    const { fetchData, error, result } = useFetch();
+    const { fetchData, error, result } = useFetch('https://jsonplaceholder.typicode.com/todos/');
     this.fetchData = fetchData;
     this.error = error;
     this.result = result;
@@ -19,7 +19,7 @@ class UserService {
 
   async getUsers(params = ''): HttpResponse<User[]> {
     this.loadingStore.isLoading = true;
-    await this.fetchData('get', `/users?${params}`);
+    await this.fetchData('get', `?${params}`);
     this.loadingStore.isLoading = false;
   
     return {
@@ -29,7 +29,7 @@ class UserService {
   }
   
   async getUser(id: string): HttpResponse<User> {
-    await this.fetchData('get', `/users/${id}`);
+    await this.fetchData('get', `${id}`);
     return {
       error: this.error,
       result: this.result,

@@ -49,7 +49,7 @@
  
 <script setup lang="ts">
 import { reactive, watch } from 'vue';
-import { Link } from '../interfaces/Menu';
+import { Link } from '../../interfaces/Menu';
  
  
 const emit = defineEmits<{

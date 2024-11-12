@@ -14,7 +14,8 @@ export const useNavbarStore = defineStore('navbar', {
         'NotFound', 
         'Home', 
         'NotificationsHistory', 
-        'Login'
+        'Login',
+        'ForgottenPassword',
       ];
       
       const navbarRoutes: Menu = routes

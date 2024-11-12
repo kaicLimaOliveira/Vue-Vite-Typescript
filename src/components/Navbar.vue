@@ -45,6 +45,7 @@
         </div>
 
         <div>
+          <Icon :icon="darkStore.isDarkModeOn ? 'sun' : 'moon'" @click="darkStore.toggleDarkMode()" />
           <DropdownHover  />
         </div>
       </header>
@@ -57,12 +58,13 @@
 </template>
  
 <script setup lang="ts">
-import Dropdown from "./Dropdown.vue";
+import Dropdown from "./Dropdowns/Dropdown.vue";
+import DropdownHover from "./Dropdowns/DropdownHover.vue";
+import NotificationsBell from "./NotificationsBell.vue";
  
 import { reactive, ref } from "vue";
 import { Menu } from "../interfaces/Menu"
-import NotificationsBell from "./NotificationsBell.vue";
-import DropdownHover from "./Dropdowns/DropdownHover.vue";
+import { useDarkModeStore } from "../stores/darkStore";
  
  
 const sideBarState = ref(localStorage.getItem('sideBar') || 'opened')
@@ -86,7 +88,8 @@ const state: State = reactive({
   currentLinkHovered: null,
 })
  
- 
+const darkStore = useDarkModeStore();
+
 function toggleSideBar() {
   state.isLoadingImage = true;
  
@@ -169,10 +172,10 @@ function toggleSideBar() {
             text-decoration: none;
             
             &:hover {
-              background-color: var(--grey-600);
+              background-color: var(--primary-color) ;
 
               svg, span {
-                color: rgb(255, 255, 255) !important;
+                color: #fff !important;
               }
             }
             
@@ -185,7 +188,7 @@ function toggleSideBar() {
             }
 
             span {
-              font-size: 11px;
+              font-size: 12px;
               align-items: center;
               color: var(--black-700);
               margin-left: 12px;
@@ -207,8 +210,16 @@ function toggleSideBar() {
 
  
 .router-link-active {
-  background-color: var(--grey-600) !important;
-  color: #fff !important;
+  background-color: var(--primary-color) !important;
+  transition: filter .25s ease-in-out;
+
+  svg, span {
+    color: #fff !important;
+  }
+
+  &:hover {
+    filter: brightness(80%);
+  }
 }
  
 .opened {
@@ -231,7 +242,7 @@ main {
 }
  
 .nav-content {
-  box-shadow: inset 0 -1px 0 var(--grey-600);
+  border-bottom: 1px solid var(--grey-600);
   display: flex;
   justify-content: space-between;
   padding: 12px 22px;

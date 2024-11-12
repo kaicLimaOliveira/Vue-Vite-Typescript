@@ -2,8 +2,7 @@
   <div :class="{ 'dark-theme': isDarkModeOn }">
     <RouterView v-slot="{ Component }">
       <ProgressAlert 
-        v-if="$route.name == 'Datatables'"
-        class="is-absolute is-flex is-align-items-center is-flex-direction-column mt-3"
+        class="alert"
         style="z-index: 9999;"
       ></ProgressAlert>
       
@@ -51,4 +50,13 @@ const state = reactive({
 @import './assets/styles/scss/globals.scss';
 @import './assets/styles/scss/tooltip.scss';
 @import './assets/styles/scss/helpers.scss';
+@import './assets/styles/scss/dark-theme.scss';
+
+.alert {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 16px;
+}
 </style>

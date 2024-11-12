@@ -1,0 +1,30 @@
+.dark-theme {
+  background-color: #272727  !important;
+  color: #cecece !important;
+
+  .nav-content {
+    background-color: #272727  !important;
+    border-bottom: 1px solid #393939 !important;
+  }
+
+  .page-loader {
+    background-color: #242427 !important;
+  }
+
+  .sidebar {
+    background-color: #272727  !important;
+    border-right: 1px solid #393939 !important;
+
+    .router-link {
+      color: #cecece !important;
+
+      svg {
+        color: #242427 !important;
+      }
+    }
+  }
+
+  svg {
+    color: #cecece !important;
+  }
+}

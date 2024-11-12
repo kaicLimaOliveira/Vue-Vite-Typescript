@@ -9,6 +9,12 @@ import {
     faEyeSlash,
     faGear,
     faRightFromBracket,
+    faSun,
+    faMoon,
+    faMagnifyingGlass,
+    faFilter,
+    faSort,
+    faEllipsisV,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -19,4 +25,10 @@ library.add(
     faEyeSlash,
     faGear,
     faRightFromBracket,
+    faSun,
+    faMoon,
+    faMagnifyingGlass,
+    faFilter,
+    faSort,
+    faEllipsisV,
 );
