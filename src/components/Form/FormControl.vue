@@ -12,8 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useAttrs } from 'vue';
-import { ref } from 'vue';
+import { useAttrs, ref } from 'vue';
 import Label from './Label.vue';
 
 interface InputProps {

@@ -14,7 +14,12 @@ import {
     faMagnifyingGlass,
     faFilter,
     faSort,
+    faSortDown,
+    faSortUp,
     faEllipsisV,
+    faAngleDown,
+    faTimesCircle,
+    faEdit,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -30,5 +35,10 @@ library.add(
     faMagnifyingGlass,
     faFilter,
     faSort,
+    faSortDown,
+    faSortUp,
     faEllipsisV,
+    faAngleDown,
+    faTimesCircle,
+    faEdit,
 );

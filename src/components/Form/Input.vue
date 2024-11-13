@@ -13,8 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useAttrs } from 'vue';
-import { ref } from 'vue';
+import { ref, useAttrs } from 'vue';
 import { InputProps } from '../../interfaces/Components';
 
 const props = withDefaults(defineProps<InputProps>(), {})

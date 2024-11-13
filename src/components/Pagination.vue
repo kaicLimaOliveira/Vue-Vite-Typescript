@@ -52,7 +52,7 @@ const props = withDefaults(defineProps<PaginationProps>(), {
   pages: 0,
   rangeSize: 1,
   modelValue: 0,
-  showButtonsOnBounderies: false,
+  showButtonsOnBounderies: true,
 })
 
 const emit = defineEmits<{
@@ -142,23 +142,24 @@ function goToNext() {
     display: flex;
 
     .page {
-      background-color: #ebe9e9;
-      border: 1px solid hsl(0, 0%, 86%);
+      background-color: #e6e6e6;
+      border: 1px solid hsl(0, 0%, 84%);
       color: #3f4244;
       min-width: 2rem;
       transition: box-shadow 0.2s;
       border-radius: 4px;
       transition: .17s;
       cursor: pointer;
-      padding: 1rem;
+      padding: .75rem;
       margin: .25rem;
+      height: 42px;
 
       &:hover {
         filter: brightness(0.9);
       }
 
       &-active {
-        background-color: var(--link) !important;
+        background-color: var(--primary-color) !important;
         color: #fff;
       }
     }

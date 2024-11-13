@@ -1,9 +1,19 @@
 interface User {
-  id: string;
-  name: string;
+  id: number | string;
+  firstName: string;
+  lastName: string;
+  maidenName: string;
+  age: number;
+  gender: string;
   email: string;
-  password?: string;
-  dateOfBirth: Date;
+  phone: string;
+  username: string;
+  password: string;
+  birthDate: string; 
+  image: string;
+  bloodGroup: string;
+  height: number;
+  weight: number;
 }
 
 export type {

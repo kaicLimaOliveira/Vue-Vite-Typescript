@@ -9,40 +9,58 @@ type Args = {
   binding: DirectiveBinding<string>;
 }
 
-
 function applyMask(value: string, pattern: string): string {
   let maskedValue = '';
   let valueIndex = 0;
-  
+
   for (const char of pattern) {
-    
-    if (char === '#') {
+    if (char === '#') {  
+      if (valueIndex < value.length && /\d/.test(value[valueIndex])) {
+        maskedValue += value[valueIndex];
+        valueIndex++;
+      } else {
+        break;
+      }
+    } else if (char === 'A') {  
+      if (valueIndex < value.length && /[a-zA-Z]/.test(value[valueIndex])) {
+        maskedValue += value[valueIndex];
+        valueIndex++;
+      } else {
+        break;
+      }
+    } else if (char === 'X') {  
+      if (valueIndex < value.length && /[a-zA-Z0-9]/.test(value[valueIndex])) {
+        maskedValue += value[valueIndex];
+        valueIndex++;
+      } else {
+        break;
+      }
+    } else if (char === '*') {  
       if (valueIndex < value.length) {
         maskedValue += value[valueIndex];
         valueIndex++;
-        
       } else {
-        break; 
-      }
-    } else {
-      
-      if (valueIndex >= value.length) {
         break;
       }
-      
-      maskedValue += char; 
+    } else {  
+      if (valueIndex >= value.length) break;
+      maskedValue += char;
+      if (value[valueIndex] === char) {
+        valueIndex++;
+      }
     }
   }
 
   return maskedValue;
 }
 
-
 const closure = (args: Args) => {
   const format = (event: Event) => {
     const inputElement = event.target as HTMLInputElement;
-    const inputValue = inputElement.value.replace(/[^\d]/g, '');
+
+    const inputValue = inputElement.value.replace(/[^a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/g, '');
     const maskedValue = applyMask(inputValue, args.binding.value);
+
     inputElement.value = maskedValue;
 
     requestAnimationFrame(() => {
@@ -54,19 +72,14 @@ const closure = (args: Args) => {
   return format;
 }
 
-
 export default {
   beforeMount(el: CustomInputElement, binding: DirectiveBinding<string>) {
     const formatInput = closure({ el, binding });
-
     el.addEventListener('input', formatInput);
     el._formatInput = formatInput;
   },
   updated(el: CustomInputElement, binding: DirectiveBinding<string>) {
-    // const formatInput = closure({ el, binding });
-    
-    // el.addEventListener('input', formatInput);
-    // el._formatInput = formatInput;
+    el._formatInput = closure({ el, binding });
   },
   beforeUnmount(el: CustomInputElement) {
     if (el._formatInput) el.removeEventListener('input', el._formatInput);

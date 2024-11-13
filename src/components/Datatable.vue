@@ -22,34 +22,43 @@
           @click="emit('clearFilters')"
           class="button is-red has-text-weight-medium mr-4">Limpar filtros</button> -->
           
-        <div class="show-items">
-          <label>Mostrar 
-            <select 
-              v-model="state.itemsPerPage"
-              @change="(event:any) => {
-                emit('limit', Number(event.target.value))
-                setLocalStorage(event)
-              }"
-              class="button mx-2 px-2" 
-            >
-              <option value="10">10</option>
-              <option value="25">25</option>
-              <option value="50">50</option>
-            </select>
-          </label>
-        </div>  
+        <!-- <div class="show-items">
+          <Select 
+            label="Mostrar" 
+            :options="[
+              {
+                label: '10',
+                value: '10',
+              },
+              {
+                label: '25',
+                value: '25',
+              },
+              {
+                label: '50',
+                value: '50',
+              }
+            ]"
+            @update:model-value="state.itemsPerPage = $event as number"
+          ></Select>
+        </div>   -->
       </div>
 
       <div class="date-container">
-        <div class="is-flex is-align-items-center" v-if="enableDateFilter">
+        <!-- <div class="is-flex is-align-items-center" v-if="enableDateFilter"> -->
           <!-- <DatePicker 
             :start-date="dateFilterStart" 
             @update:model-value="state.date = $event"
           ></DatePicker> -->
-        </div>
-<!-- 
-        <button v-if="enableFiltering" class="button is-link has-text-weight-medium ml-3"
-          @click="emit('filterData', state.date)">Filtrar</button> -->
+        <!-- </div> -->
+
+        <Button 
+          v-if="props.enableCreate"
+          class="is-primary"
+          @click="emit('create')"
+        >
+          Novo
+        </Button>
       </div>
     </div>
     
@@ -59,21 +68,21 @@
       ref="tableContainer"
       :class="state.scroll ? 'table-container-with-scrollbar' : ''"    
     >
-      <table v-show="!state.isLoading" >
+      <table v-show="!props.isLoading" >
         <thead>
           <tr>
             <th 
               v-for="header, key in computedHeaders" 
               @click="() => {
                 if (header === actionHeaderLabel) return 
-                state.orderingField = key as string
+                state.orderingField = key
                 iconOrder(header)
                 queryFilterTable()
               }" 
               :key="key"
             >
               {{ header }}
-              <icon v-if="header !== actionHeaderLabel" :icon="state.iconClicked === header ? state.icon : 'sort'"></icon>
+              <Icon v-if="header !== actionHeaderLabel" :icon="state.iconClicked === header ? state.icon : 'sort'"></Icon>
             </th>
           </tr>
         </thead>
@@ -98,20 +107,16 @@
                 {{ row }}
               </div>
             </td>
-
             
-            <td v-if="((enableUpdate || enableDelete) && (state.canDelete || state.canUpdate))" class="vertical-align-middle">
-
+            <td v-if="(enableUpdate || enableDelete)" class="action-icons">
               <Icon 
-                v-if="enableUpdate && state.canUpdate && state.indexTd !== key" 
-                class="is-clickable has-text-link mr-4" 
+                v-if="enableUpdate"  
                 icon="edit"
-                @click="[selectItem((column)[0], 'update'), state.indexTd = key]"
+                @click="selectItem((column)[0], 'update')"
               ></Icon>
 
               <Icon 
-                v-if="enableDelete && state.canDelete" 
-                class="is-clickable has-text-danger" 
+                v-if="enableDelete" 
                 icon="times-circle"
                 @click="selectItem((column)[0], 'delete')"
               ></Icon>
@@ -120,19 +125,19 @@
         </tbody>
 
         <tfoot>
-          <div v-if="props.data.value.length == 0 && !state.isLoading" class="no-data">
+          <div v-if="props.tableLength == 0 && !props.isLoading" class="no-data">
             <span>Nenhum dado disponível...</span>
           </div>
 
           <div v-else class="quantity-data">
-            Total de {{ props.data.value.length }} ite
-            <span v-if="props.data.value.length != 1">ns</span>
+            Total de {{ props.tableLength }} ite
+            <span v-if="props.tableLength != 1">ns</span>
             <span v-else>m</span>.
           </div>
         </tfoot>
       </table>
 
-      <div v-show="state.isLoading" class="anim-container">
+      <div v-show="props.isLoading" class="anim-container">
         <div v-for="_ in 3" class="table-loader-container">
           <div class="table-loader-anim margin-table"></div>
           <div class="table-loader-anim margin-table"></div>
@@ -140,8 +145,8 @@
         </div>
       </div>
     </div>
-
-    <Pagination v-model="state.page" :pages="tablePages" :showButtonsOnBounderies="showButtonsOnBounderies" />
+    
+    <Pagination v-model="state.page" :pages="tablePages" />
   </div>
 </template>
 
@@ -150,10 +155,10 @@ import DebounceInput from "./Form/DebounceInput.vue";
 import Pagination from "./Pagination.vue";
 
 import { reactive, computed, watch, onMounted, ref } from "vue";
-// import { integerMask } from "../utils/inputs";
 import { parseQueryParams } from "../utils/parsers";
+import Select from "./Form/Select.vue";
 
-interface Props {
+interface TableProps {
   headers: Record<string, string>;
   data: {
     value: any[];
@@ -163,28 +168,28 @@ interface Props {
     getMany: (params: any) => Promise<any>;
     get: (...params: any) => Promise<any>;
   };
-  queryParamsManyObjects?: any;
-  queryParamsSingleObject?: any;
   itemsPerPage: number;
+  enableCreate?: boolean;
   enableUpdate?: boolean;
   enableDelete?: boolean;
-  idFieldName?: string;
   isLoading?: boolean;
-  loadingDelay?: number;
-  showButtonsOnBounderies?: boolean;
-  enableFiltering?: boolean;
+
+  queryParamsManyObjects?: any;
+  queryParamsSingleObject?: any; //Validar se está sendo usado
+
+
+  idFieldName?: string;
   enableDateFilter?: boolean;
   searchInputDetailsLabel?: string;
   searchInputDetailsPosition?: string;
   searchInputDetailsData?: string[];
-  viewName: string;
   reloadTable?: boolean;
   selectedObj?: number | string;
   viewMode?: string;
   canLoadData?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<TableProps>(), {
   tableLength: 0,
   queryParamsManyObjects: {},
   queryParamsSingleObject: {},
@@ -193,9 +198,6 @@ const props = withDefaults(defineProps<Props>(), {
   enableDelete: true,
   idFieldName: 'id',
   isLoading: false,
-  loadingDelay: 400,
-  showButtonsOnBounderies: true,
-  enableFiltering: false,
   enableDateFilter: false,
   searchInputDetailsLabel: 'Você pode filtrar os seguintes campos:',
   searchInputDetailsPosition: 'right',
@@ -205,61 +207,54 @@ const props = withDefaults(defineProps<Props>(), {
   canLoadData: true
 })
 
+
 const emit = defineEmits<{
-  (e: 'currentPage', value: number): void
-  (e: 'limit', value: number): void
-  (e: 'filter', value: boolean): void
-  (e: 'filterData', value: [Date, Date]): void
-  (e: 'dateValue', value: [Date, Date]): void
-  (e: 'selectedItem', value: number | string): void
-  (e: 'reset-reload'): void
-  (e: 'view'): void
-  (e: 'update'): void
-  (e: 'delete'): void
+  currentPage: [value: number];
+  limit: [value: number];
+  filter: [value: boolean];
+  filterData: [value: [Date, Date]];
+  dateValue: [value: [Date, Date]];
+  selectedItem: [value: number | string];
+  'reset-reload': [];
+  view: [value: number];
+  create: [];
+  update: [value: number];
+  delete: [value: number];
 }>();
 
-// ['view', 'update', 'delete', 'selectedItem', 'reset-reload', 'clearFilters', 'changeLimit', 'filter']
 
 interface State {
   date: [Date, Date]
   search: string;
   page: number;
-  isLoading: boolean;
-  canUpdate: boolean;
-  canDelete: boolean;
   orderingField: string | null;
   orderingFlow: string | null;
   icon: string;
   iconClicked: string;
   scroll: boolean;
-  indexTd: number;
-  itemsPerPage?: number;
+  itemsPerPage: number;
 }
 
 const state: State = reactive({
   date: [new Date(), new Date()],
   search: '',
   page: 1,
-  isLoading: false,
-  canUpdate: false,
-  canDelete: false,
   orderingField: '',
   orderingFlow: '',
   icon: 'sort',
   iconClicked: '',
   scroll: false,
-  indexTd: -1,
-  itemsPerPage: Number(localStorage.getItem('itemsPerPage') ?? 10),
+  itemsPerPage: Number(localStorage.getItem('itemsPerPage')) ?? 10,
 })
 
-onMounted(() => {
-  
-  if (props.canLoadData)
-    queryFilterTable()
+onMounted(async () => {
+  if (props.canLoadData) {
+    await queryFilterTable()
+  }
 
-  if (props.selectedObj != 0 && props.selectedObj != '')
-    selectItem(props.selectedObj, props.viewMode)
-  console.log(props.data);
+  if (props.selectedObj != 0 && props.selectedObj != '') {
+    await selectItem(props.selectedObj, props.viewMode)
+  }
 })
 
 const tableContainer = ref<HTMLElement | null>(null)
@@ -315,26 +310,10 @@ const list = computed(() => {
 const actionHeaderLabel = 'Ações'
 
 const computedHeaders = computed(() => {
-  ((props.enableUpdate || props.enableDelete) && (state.canDelete || state.canUpdate)) ? props.headers['options'] = actionHeaderLabel : props.headers
+  (props.enableUpdate || props.enableDelete) ? props.headers['options'] = actionHeaderLabel : props.headers
   return props.headers
 })
 
-watch(
-  () => props.isLoading,
-  async (newValue) => {
-
-    state.isLoading = true
-
-    await new Promise(() => {
-      setTimeout(() => {
-
-        if (newValue === false)
-          state.isLoading = false
-
-      }, props.loadingDelay)
-    })
-  }
-)
 
 const tablePages = computed(() => {
   return Math.ceil(props.tableLength / props.itemsPerPage)
@@ -438,18 +417,13 @@ async function queryFilterTable(resetOffset = true) {
   
   const params = {
     'search': state.search,
-    'offset': offset.value,
+    'skip': offset.value,
     'limit': props.itemsPerPage
   }
 
-  const res = await props.service?.getMany(parseQueryParams(params))  
-  console.log(res);
-  
+  await props.service?.getMany(parseQueryParams(params));  
 }
 
-function setLocalStorage(event: any) {
-  localStorage.setItem('itemsPerPage', event.target.value)
-}
 
 function iconOrder(header: string) {
   if (state.iconClicked === '' || state.iconClicked !== header){
@@ -472,7 +446,6 @@ function iconOrder(header: string) {
       break;
   }
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -483,6 +456,7 @@ function iconOrder(header: string) {
   background-color: #fff;
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
 
   .datatable-options {
     display: flex;
@@ -528,19 +502,53 @@ function iconOrder(header: string) {
       margin-bottom: 1rem;
 
       thead {
+        background-color: #f5f5f5;
         th {
           text-wrap: nowrap;
+          padding: .35rem;
+          font-weight: bold;
+          text-transform: uppercase;
+          font-size: 13px;
+          letter-spacing: .05em;
+          abbr {
+            text-decoration: none;
+          }
         }
       }
 
       tbody {
         tr {
-          td {
+          td, th {
+            padding: .35rem;
+            font-size: 14px;
+            text-align: left;
+            border-top: 1px solid #ddd;
             vertical-align: middle;
             cursor: pointer;
             word-break: break-word;
           }
+
+          &:hover {
+            background-color: #f1f1f1;
+          }
+
+          &.is-selected {
+            background-color: #e6f7ff;
+          }
+
+          .action-icons {
+            .fa-pen-to-square {
+              color: var(--link-color);
+              margin: 0 8px;
+            }
+
+            .fa-circle-xmark {
+              color: var(--danger-color);
+            }
+          }
         }
+
+        
       }
 
       tfoot {
@@ -551,7 +559,7 @@ function iconOrder(header: string) {
         .quantity-data {
           display: flex;
           font-weight: bold;
-          margin-top: .75rem;
+          margin-top: 1rem;
         }
       }
 
@@ -566,26 +574,6 @@ function iconOrder(header: string) {
   padding-right: 0.1em;
   box-sizing: border-box;
   overflow-x: auto;
-}
-
-.table-padding-1 th,
-.table-padding-1 td {
-  padding: 0.25em 0.5em;
-}
-
-.table-padding-2 th,
-.table-padding-2 td {
-  padding: 0.35em 0.65em;
-}
-
-.table-padding-3 th,
-.table-padding-3 td {
-  padding: 0.5em 0.75em;
-}
-
-.table-padding-4 th,
-.table-padding-4 td {
-  padding: 0.75em 1em;
 }
 
 .anim-container {

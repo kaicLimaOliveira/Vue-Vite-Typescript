@@ -9,7 +9,7 @@
         :class="alert.type"
       >
         <div class="alert-container-columns">
-          <div class="column-icon">
+          <div v-if="alert.icon" class="column-icon">
             <Icon :icon="alert.icon" />
           </div>
 

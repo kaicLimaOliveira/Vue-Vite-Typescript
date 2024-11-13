@@ -6,21 +6,21 @@
         style="z-index: 9999;"
       ></ProgressAlert>
       
-      <Navbar v-if="$route.meta.enableNav" :router-links="state.routerLinks">
+      <Navbar v-if="route.meta.enableNav" :router-links="state.routerLinks">
         <Transition name="fade" mode="out-in">
           <Component 
             class="component" 
             :is="Component" 
-            :key="$route.path"
+            :key="route.path"
           ></Component>
         </Transition>
       </Navbar>
 
       <Transition v-else name="fade" mode="out-in">
-        <Component :is="Component" class="component-without-navbar" :key="$route.path"></Component>
+        <Component :is="Component" class="component-without-navbar" :key="route.path"></Component>
       </Transition>
 
-      <Loader v-if="loadingStore.isLoading"></Loader>
+      <Loader v-if="loadingStore.showPageLoader"></Loader>
     </RouterView>
   </div>
 </template>
@@ -34,8 +34,10 @@ import { useDarkModeStore } from "./stores/darkStore";
 import { useLoadingStore } from "./stores/loadingStore"
 import { useNavbarStore } from "./stores/navbarStore";
 import { reactive, computed } from "vue";
+import { useRoute } from "vue-router";
 
 
+const route = useRoute()
 const loadingStore = useLoadingStore();
 const darkModeStore = useDarkModeStore()
 const { getAvailableNavbarRoutes } = useNavbarStore()

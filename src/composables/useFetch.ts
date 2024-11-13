@@ -13,7 +13,6 @@ export function useFetch(baseURL: string = import.meta.env.VITE_API_URL) {
 			Accept: "application/json",
 			'Content-Type': "application/json",
 		},
-		withCredentials: true
 	})
 
   const fetchData = async (method: string, url: string, data?: object, contentType = 'application/json') => {

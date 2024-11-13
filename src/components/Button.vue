@@ -4,15 +4,15 @@
       'button',
       typeClass,
       sizeClass,
-      { 'is-loading': loading },
-      { 'is-fullwidth': fullwidth },
-      { 'is-outlined': outlined }
+      { 'is-loading': props.loading },
+      { 'is-fullwidth': props.fullwidth },
+      { 'is-outlined': props.outlined }
     ]"
-    :disabled="disabled"
+    :disabled="props.disabled || props.loading"
     v-bind="attrs"
     @click="handleClick"
   >
-    <slot />
+    <slot v-if="!props.loading" />
   </button>
 </template>
 
@@ -23,7 +23,7 @@ import { ButtonProps } from '../interfaces/Components';
 
 const props = defineProps<ButtonProps>();
 
-const emits = defineEmits<{
+const emit = defineEmits<{
   (e: 'click'): void;
 }>();
 
@@ -34,31 +34,26 @@ const sizeClass = computed(() => (props.size ? `is-${props.size}` : ''));
 
 const handleClick = () => {
   if (!props.disabled && !props.loading) {
-    emits('click');
+    emit('click');
   }
 };
 </script>
 
 <style scoped lang="scss">
-$button-padding-y: 0.5em;
-$button-padding-x: 1em;
-$button-border-radius: 4px;
-$button-font-size: 1rem;
-$button-line-height: 1.5;
-
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: $button-padding-y $button-padding-x;
-  font-size: $button-font-size;
-  line-height: $button-line-height;
-  border-radius: $button-border-radius;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 4px;
   border: 1px solid transparent;
   cursor: pointer;
   white-space: nowrap;
   text-align: center;
   transition: all 0.2s ease-in-out;
+  min-width: 90px;
 
   &:hover:not(:disabled) {
     filter: brightness(90%);

@@ -1,7 +1,7 @@
 <template>
   <div class="navigate">
     <aside class="sidebar" :class="sideBarState">
-      <div class="sidebar-logo" @click="$router.push({ name: 'Home' })">
+      <div class="sidebar-logo" @click="router.push({ name: 'Home' })">
         <div :class="{'logo-loader': state.isLoadingImage }"></div>
         <img :src="props.imgSrc" width="35" alt="logo">
       </div>
@@ -17,7 +17,7 @@
               :title="label"
               v-tooltip="label"
             >
-              <Icon :icon class="router-link-icon" size="sm" />
+              <Icon v-if="icon" :icon class="router-link-icon" size="sm" />
               <span>
                 {{ label }}
               </span>
@@ -65,16 +65,19 @@ import NotificationsBell from "./NotificationsBell.vue";
 import { reactive, ref } from "vue";
 import { Menu } from "../interfaces/Menu"
 import { useDarkModeStore } from "../stores/darkStore";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
  
  
 const sideBarState = ref(localStorage.getItem('sideBar') || 'opened')
  
-interface Props {
+interface NavbarProps {
   routerLinks: Menu;
   imgSrc?: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<NavbarProps>(), {
   imgSrc: window.location.origin + '/vue.svg'
 })
 

@@ -1,8 +1,9 @@
 import { DirectiveBinding } from "vue";
 import { useWindowSize } from "../composables/useWindowSize";
+import { TooltipModifiers } from "../interfaces/Directives";
 
 const { width, height } = useWindowSize();
-const TOOLTIP_MARGIN = 10; // Margem entre o elemento e o tooltip
+const TOOLTIP_MARGIN = 10;
 
 enum Position {
   Left = "left",
@@ -21,7 +22,7 @@ declare global {
 }
 
 export default {
-  mounted(element: HTMLElement, binding: DirectiveBinding<string>) {
+  mounted(element: HTMLElement, binding: DirectiveBinding<string> & { modifiers: TooltipModifiers }) {
     const tooltipContent = binding.value;
     const modifiers = binding.modifiers;
     const positionByModifier = getPositionFromModifiers(modifiers);
