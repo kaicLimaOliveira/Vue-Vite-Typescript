@@ -3,62 +3,58 @@ import { HttpResponse } from "../../interfaces/Http";
 import { User } from "../../interfaces/User";
 import { useLoadingStore } from "../../stores/loadingStore";
 
+export function useUserService() {
+  const { fetchData, error, result } = useFetch();
+  const loadingStore = useLoadingStore();
 
-class UserService {
-  private fetchData: ReturnType<typeof useFetch>['fetchData'];
-  private error: ReturnType<typeof useFetch>['error'];
-  private result: ReturnType<typeof useFetch>['result'];
-  private loadingStore = useLoadingStore();
+  const getUsers = async (params = ''): HttpResponse<User[]> => {
+    loadingStore.isLoading = true;
+    await fetchData('get', `/users/?${params}`);
+    loadingStore.isLoading = false;
 
-  constructor() {
-    const { fetchData, error, result } = useFetch();
-    this.fetchData = fetchData;
-    this.error = error;
-    this.result = result;
-  }
+    return {
+      error: error.value,
+      result: result.value,
+    };
+  };
 
-  async getUsers(params = ''): HttpResponse<User[]> {
-    this.loadingStore.isLoading = true;
-    await this.fetchData('get', `/users/?${params}`);
-    this.loadingStore.isLoading = false;
-  
+  const getUser = async (id: string): HttpResponse<User> => {
+    await fetchData('get', `/users/${id}`);
     return {
-      error: this.error,
-      result: this.result,
+      error: error.value,
+      result: result.value,
     };
-  }
-  
-  async getUser(id: string): HttpResponse<User> {
-    await this.fetchData('get', `/users/${id}`);
+  };
+
+  const createUser = async (payloadToCreate: User): HttpResponse<User> => {
+    await fetchData('post', '/users', payloadToCreate);
     return {
-      error: this.error,
-      result: this.result,
+      error: error.value,
+      result: result.value,
     };
-  }
-  
-  async createUser(payloadToCreate: User): HttpResponse<User> {
-    await this.fetchData('post', '/users', payloadToCreate);
+  };
+
+  const updateUser = async (id: string, payloadToUpdate: User): HttpResponse<User> => {
+    await fetchData('patch', `/users/${id}`, payloadToUpdate);
     return {
-      error: this.error,
-      result: this.result,
+      error: error.value,
+      result: result.value,
     };
-  }
-  
-  async updateUser(id: string, payloadToUpdate: User): HttpResponse<User> {
-    await this.fetchData('patch', `/users/${id}`, payloadToUpdate);
+  };
+
+  const deleteUser = async (id: string): HttpResponse<User> => {
+    await fetchData('delete', `/users/${id}`);
     return {
-      error: this.error,
-      result: this.result,
+      error: error.value,
+      result: result.value,
     };
-  }
-  
-  async deleteUser(id: string): HttpResponse<User> {
-    await this.fetchData('delete', `/users/${id}`);
-    return {
-      error: this.error,
-      result: this.result,
-    };
-  }
+  };
+
+  return {
+    getUsers,
+    getUser,
+    createUser,
+    updateUser,
+    deleteUser,
+  };
 }
-
-export default UserService;

@@ -1,59 +1,51 @@
 <template>
-  <BasicModal 
+  <Modal 
     :open="props.open" 
     @close-modal="emit('close-modal'), state.confirmAction = false" 
   >
     <template #header>
-      <slot name="header">
-
-      </slot>
+      <slot name="header"></slot>
     </template>
+
     <template #body>
       <slot name="body"></slot>
     </template>
+
     <template #footer>
       <slot name="footer">
-        <div class="has-text-right w-100">
-          <button class="button is-danger is-light is-outlined ts-15"
+        <div class="footer-buttons">
+          <Button class="is-danger light outlined"
             @click="emit('close-modal'), state.confirmAction = false"
           >
             Fechar
-          </button>
+          </Button>
 
-          <button 
+          <Button 
             v-if="state.objectViewMode !== 'create'"
-            :class="{ 'is-loading': state.actionButtonDisabled }" 
-            class="button is-danger"
-            @click="state.confirmAction = true, 
-            state.clickedAction = 'delete'"
+            :loading="props.actionButtonDisabled" 
+            class="is-danger"
+            @click="state.confirmAction = true, state.clickedAction = 'delete'"
           >
             Deletar
-          </button>
+          </Button>
 
-          <button 
+          <Button 
             v-if="state.objectViewMode === 'create'" 
-            :class="{ 'is-loading': state.actionButtonDisabled }"
-            class="button is-link" 
-            @click="() => {
-              emit('trigger-validation')
-              if (props.canExecuteAction) {
-                props.actionMiddleware('create')
-                return
-              }
-              showValidationAlert()
-            }"
+            :loading="props.actionButtonDisabled" 
+            class="is-primary" 
+            @click="props.services.create()"
           >
             Cadastrar
-          </button>
+          </Button>
 
-          <button 
+          <Button 
             v-else-if="state.objectViewMode === 'update'"
-            :class="{ 'is-loading': state.actionButtonDisabled }" 
-            class="button is-link"
+            :loading="props.actionButtonDisabled" 
+            class="is-primary"
             @click="state.confirmAction = true, state.clickedAction = 'update'"
           >
             Salvar
-          </button>
+          </Button>
         </div>
       </slot>
 
@@ -63,104 +55,98 @@
           v-show="state.confirmAction"
         >
           <span 
-            class="mr-4 has-text-weight-semibold" 
+            class="confirm-message" 
             v-if="state.clickedAction === 'update'"
           >
             Confirmar atualização?
           </span>
           <span 
-            class="mr-4 has-text-weight-semibold" 
+            class="confirm-message" 
             v-else-if="state.clickedAction === 'delete'"
           >
             Deseja realmente deletar o item?
           </span>
-          <button 
-            :class="{ 'is-loading': state.actionButtonDisabled }" 
-            class="button is-danger"
+          <Button 
+            :loading="props.actionButtonDisabled" 
+            class="is-danger"
             @click="state.confirmAction = false"
           >
             Cancelar
-          </button>
-          <button 
-            :class="{ 'is-loading': state.actionButtonDisabled }" 
-            class="button is-link"
+          </Button>
+
+          <Button 
+            :loading="props.actionButtonDisabled" 
+            class="is-primary"
             @click="() => {
               emit('trigger-validation')
-              if (props.canExecuteAction) {
-                props.actionMiddleware(state.clickedAction)
-                state.confirmAction = false
-                return
-              }
-              showValidationAlert()
+              // if (props.canExecuteAction) {
+              //   // props.actionMiddleware(state.clickedAction)
+              //   state.confirmAction = false
+              //   return
+              // }
+              // showValidationAlert()
             }"
           >
             Confirmar
-          </button>
+          </Button>
         </div>
       </Transition>
     </template>
-  </BasicModal>
+  </Modal>
 </template>
 
 <script setup lang="ts">
-import BasicModal from "./BasicModal.vue"
-import { reactive, watch } from 'vue'
-import { useAlertStore } from "../../stores/alertStore"
+import { reactive, watch } from 'vue';
 
-const alertStore = useAlertStore()
 const emit = defineEmits<{
-  (event: 'close-modal'): void;
-  (event: 'trigger-validation'): void;
+  (e: 'close-modal'): void;
+  (e: 'trigger-validation'): void;
 }>()
 
 interface Props {
   open: boolean;
-  actionMiddleware?: Function;
-  viewMode: string;
-  canExecuteAction?: boolean;
+  actionButtonDisabled: boolean;
+  currentMode?: string;
+  services: {
+    create: () => Promise<any>;
+    update?: () => Promise<any>;
+  }
 }
 
 const props = withDefaults(defineProps<Props>(), {
   open: false,
-  viewMode: 'view',
-  actionMiddleware: () => null,
-  canExecuteAction: false
+  actionButtonDisabled: false,
+  currentMode: 'view',
 })
 
 interface State {
   confirmAction: boolean;
   clickedAction: string;
   objectViewMode: string;
-  actionButtonDisabled: boolean;
 }
 
 const state: State = reactive({
   confirmAction: false,
   clickedAction: '',
-  objectViewMode: 'view',
-  actionButtonDisabled: false,
+  objectViewMode: 'view'
 })
 
-
-function showValidationAlert() {
-  alertStore.add({
-    icon: 'circle-exclamation',
-    type: 'danger',
-    title: 'Atenção!',
-    content: 'Preencha todos os campos corretamente.'
-  }, 4)
-}
-
 watch(
-  () => props.viewMode,
+  () => props.currentMode,
   (newValue) => {
     state.objectViewMode = newValue
   }
 )
-
 </script>
 
 <style lang="scss" scoped>
+.footer-buttons {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 8px;
+}
+
 .footer-cover {
   position: absolute;
   display: flex;
@@ -171,6 +157,23 @@ watch(
   width: 100%;
   height: 80%;
   left: 0;
+}
+
+.confirm-message {
+  margin-right: 1rem;
+  font-weight: 600;
+}
+
+@keyframes loading-dots {
+  0%, 100% {
+    content: '';
+  }
+  33% {
+    content: '.';
+  }
+  66% {
+    content: '..';
+  }
 }
 
 .slide-enter-from,

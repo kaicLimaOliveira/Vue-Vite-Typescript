@@ -16,7 +16,17 @@ interface ButtonProps {
   outlined?: boolean;
 }
 
-export {
+interface ModalProps {
+  open: boolean;
+}
+
+interface SelectProps {
+  open: boolean;
+}
+
+export type {
   InputProps,
   ButtonProps,
+  ModalProps,
+  SelectProps,
 }

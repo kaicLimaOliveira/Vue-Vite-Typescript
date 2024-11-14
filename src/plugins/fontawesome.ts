@@ -20,6 +20,7 @@ import {
     faAngleDown,
     faTimesCircle,
     faEdit,
+    faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -41,4 +42,5 @@ library.add(
     faAngleDown,
     faTimesCircle,
     faEdit,
+    faExclamationTriangle,
 );

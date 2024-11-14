@@ -48,12 +48,14 @@ const handleClick = () => {
   font-size: 1rem;
   line-height: 1.5;
   border-radius: 4px;
-  border: 1px solid transparent;
   cursor: pointer;
   white-space: nowrap;
   text-align: center;
   transition: all 0.2s ease-in-out;
   min-width: 90px;
+  background-color: #f8f8f8;
+  border: .5px solid #d6d9e0;
+  font-weight: 500;
 
   &:hover:not(:disabled) {
     filter: brightness(90%);

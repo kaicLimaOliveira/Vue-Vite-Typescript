@@ -2,39 +2,32 @@ import { useFetch } from "../../composables/useFetch";
 import { HttpResponse } from "../../interfaces/Http";
 import { useLoadingStore } from "../../stores/loadingStore";
 
-class AuthenticationService {
-  private fetchData: ReturnType<typeof useFetch>['fetchData'];
-  private error: ReturnType<typeof useFetch>['error'];
-  private result: ReturnType<typeof useFetch>['result'];
-  private loadingStore = useLoadingStore();
+export function useAuthenticationService() {
+  const { fetchData, error, result } = useFetch();
+  const loadingStore = useLoadingStore();
 
-  constructor() {
-    const { fetchData, error, result } = useFetch();
-    this.fetchData = fetchData;
-    this.error = error;
-    this.result = result;
-  }
+  const login = async (data: object): HttpResponse<any> => {
+    loadingStore.isLoading = true;
+    await fetchData('post', '/auth/login', data);
+    loadingStore.isLoading = false;
 
-  async login(data: object): HttpResponse<any> {
-    this.loadingStore.isLoading = true;
-    await this.fetchData('post', 'login', data);
-    this.loadingStore.isLoading = false;
-  
     return {
-      error: this.error,
-      result: this.result,
+      error: error.value,
+      result: result.value,
     };
-  }
-  
-  async logout() {
-    await this.fetchData('post', 'logout');
-  
+  };
+
+  const logout = async (): HttpResponse<any> => {
+    await fetchData('post', 'logout');
+
     return {
-      error: this.error,
-      result: this.result,
+      error: error.value,
+      result: result.value,
     };
-  }
+  };
+
+  return {
+    login,
+    logout,
+  };
 }
-
-
-export default AuthenticationService;

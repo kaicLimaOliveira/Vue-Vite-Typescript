@@ -25,10 +25,10 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { useAuthStore } from '../../stores/authStore';
-import AuthenticationService from '../../server/api/authentication';
+import { useAuthenticationService } from '../../server/api/authentication';
 
-const authStore = useAuthStore()
-const service = new AuthenticationService()
+const authStore = useAuthStore();
+const service = useAuthenticationService(); 
 
 function logoutUser() {
   service.logout()

@@ -2,8 +2,8 @@ import { AxiosError } from "axios";
 import { Ref } from "vue";
 
 interface Response<T> {
-  error: Ref<AxiosError<unknown, any> | null, AxiosError<unknown, any> | null>;
-  result: Ref<T>;
+  error: AxiosError<unknown, any> | null;
+  result: T;
 }
 
 type HttpResponse<T> = Promise<Response<T>>;

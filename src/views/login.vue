@@ -4,7 +4,7 @@
       <h2 class="title">Acesse sua conta</h2>
       <div class="content">
         <FormControl 
-          v-model="state.email" 
+          v-model="loginState.email" 
           label="E-mail"
           icon="user"
         ></FormControl>
@@ -12,7 +12,7 @@
         <div class="password">
           <Label label="Senha"></Label>
           <Input 
-            v-model="state.password"
+            v-model="loginState.senha"
             :type="state.showPassword ? 'text': 'password'"
           >
             <Icon 
@@ -45,23 +45,46 @@ import LoginLayout from '../layouts/login-layout.vue';
 
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router'
+import { useAuthenticationService } from '../server/api/authentication'
+import { useLoadingStore } from '../stores/loadingStore';
 
 interface State {
-  email: string;
-  password: string;
   showPassword: boolean;
+  service: ReturnType<typeof useAuthenticationService>
 }
 
 const state: State = reactive({
-  email: "",
-  password: "",
   showPassword: false,
+  service: useAuthenticationService(),
 })
 
-const router = useRouter()
+interface Login {
+  email: string;
+  senha: string;
+}
 
-function login() {
-  router.push({ name: 'Home' })
+const loginState: Login = reactive({
+  email: "",
+  senha: "",
+})
+
+
+const loadingStore = useLoadingStore();
+const router = useRouter();
+
+async function login() {
+  try {
+    loadingStore.showPageLoader = true;
+    // const { error, result } = await state.service.login(loginState);
+    // console.log(result);
+    
+    
+    router.push({ name: 'Home' })
+  } catch (error) {
+    router.push({ name: 'Login' })
+  } finally {
+    loadingStore.showPageLoader = false;
+  }
 }
 </script>
 

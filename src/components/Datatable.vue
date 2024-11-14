@@ -54,7 +54,6 @@
 
         <Button 
           v-if="props.enableCreate"
-          class="is-primary"
           @click="emit('create')"
         >
           Novo
