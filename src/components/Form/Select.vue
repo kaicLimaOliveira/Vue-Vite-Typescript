@@ -3,48 +3,49 @@
     <select 
       v-bind="attrs" 
       v-model="state.option"
-      @input="emit('update:modelValue', state.option)"
+      @change="handleSelect"
     >
-      <option hidden>Selecione</option>
-      <option :value v-for="{ label, value } in options">
+      <option value="" disabled selected>Selecione</option>
+      <option :value v-for="{ label, value } in props.options">
         {{ label }}
       </option>
     </select>
-    
+
     <Icon icon="angle-down" class="select-icon" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
-import { useAttrs } from 'vue';
-
+import { reactive, useAttrs } from 'vue';
 
 const attrs = useAttrs();
-
-interface State {
-  option: string | number;
-}
-
-const state: State = reactive({
-  option: ''
-})
 
 interface SelectProps {
   options: {
     label: string;
-    value: string | number;
-  }[]
+    value: string;
+  }[];
+  modelValue: number;
 }
 
-const props = withDefaults(defineProps<SelectProps>(), {
+const props = withDefaults(defineProps<SelectProps>(), {})
 
+interface State {
+  option: number;
+}
+
+const state: State = reactive({
+  option: props.modelValue
 })
 
-
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string | number): void;
+  (e: 'update:modelValue', value: number): void;
 }>();
+
+function handleSelect(event: Event) {
+  const value = (event.target as HTMLInputElement).value
+  emit('update:modelValue', Number(value));
+}
 </script>
 
 <style scoped lang="scss">

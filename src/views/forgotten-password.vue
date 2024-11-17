@@ -34,6 +34,10 @@ interface State {
 const state: State = reactive({
   email: "",
 })
+
+defineExpose({
+  state,
+});
 </script>
 
 <style scoped lang="scss">
@@ -59,14 +63,14 @@ form {
       -webkit-box-align: center;
       align-items: center;
       font-size: 14px;
-      color: var(--text-muted);
+      color: var(--grey-800);
       margin: 32px 0px;
 
       &::before, &::after {
         content: "";
         flex: 1;
         height: 1px;
-        background-color: var(--text-muted) ;
+        background-color: var(--grey-800) ;
         margin: 0 16px;
       }
     }

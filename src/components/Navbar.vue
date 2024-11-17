@@ -163,10 +163,10 @@ function toggleSideBar() {
           position: relative;
       
           .router-link {
-            margin: 0px 0px 5px;
+            margin: 0px 0px 6px;
             border-radius: 4px;
             transition: .12s;
-            padding: 10px;
+            padding: 8px;
             background-color: var(--grey-400);
             display: flex;
             width: 100%;
@@ -183,7 +183,7 @@ function toggleSideBar() {
             }
             
             &-icon {
-              margin: 0 5px;
+              margin: 0 7px;
               display: flex;
               justify-content: center;
               align-items: center;
@@ -248,7 +248,7 @@ main {
   border-bottom: 1px solid var(--grey-600);
   display: flex;
   justify-content: space-between;
-  padding: 12px 22px;
+  padding: 12px 24px;
 
   div {
     display: flex;

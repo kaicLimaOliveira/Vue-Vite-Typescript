@@ -1,24 +1,26 @@
 <template>
   <div>
+    <!-- <CrudLayout
+      title="Cadastro de usuários"
+      view-name="Users"
+      @click="state.openModal = true"
+    ></CrudLayout> -->
+
     <Datatable 
       :headers
-      :service="{
-        getMany: getUsers,
-        get: getUser,
-      }" 
+      :service="getServices" 
       :data="state.users"
-      :items-per-page="state.itemsPerPage"
-      :table-length="state.tableLength || 0"
+      :items-per-page="state.table.itemsPerPage"
+      :table-length="state.table.tableLength || 0"
       :is-loading="state.isLoading"
       :enable-create="true"
       :enable-update="true"
       :enable-delete="true"
       @selected-item="state.selectUser = $event"
       @view="state.openModal = true, state.objectViewMode = 'view'"
-      @create="state.openModal = true, state.objectViewMode = 'create'"
       @update="state.openModal = true, state.objectViewMode = 'update'"
       @delete="state.showDeleteModal = true, state.objectViewMode = 'delete'"
-      @current-page="state.tableCurrentPage = $event"
+      @current-page="state.table.tableCurrentPage = $event"
     ></Datatable>
 
     <Teleport to="#app">
@@ -26,11 +28,10 @@
         :action-button-disabled="state.isLoadingButton"
         :open="state.openModal"
         :current-mode="state.objectViewMode" 
-        :services="{
-          create: createUser,
-        }"
+        :services="crudServices"
         @close-modal="state.openModal = false"
       >
+        <template #header>Tela de usuários</template>
         <template #body>
           <div class="columns">
             <div class="column">
@@ -76,6 +77,7 @@
         <template #footer>
           <Button 
             class="mr-2 is-link" 
+            :loading="state.isLoadingButton"
             @click="deleteUser(user.id)"
           >
             Confirmar
@@ -91,14 +93,20 @@
 </template>
 
 <script setup lang="ts">
-import Datatable from '../components/Datatable.vue';
-import { useUserService } from '../server/api/user';
-import { User } from '../interfaces/User';
-import { reactive } from 'vue';
-import Modal from '../components/modals/Modal.vue';
-import FormControl from '../components/Form/FormControl.vue';
 import CrudModal from '../components/modals/CrudModal.vue';
+import Datatable from '../components/Datatable.vue';
+import FormControl from '../components/Form/FormControl.vue';
+import Modal from '../components/modals/Modal.vue';
 
+import { computed, reactive } from 'vue';
+import { User } from '../interfaces/User';
+
+import { useUserService } from '../server/api/user';
+import { useAlertStore } from '../stores/alertStore';
+import CrudLayout from '../layouts/crud-layout.vue';
+
+
+const alertStore = useAlertStore();
 
 interface State {
   users: {
@@ -110,10 +118,13 @@ interface State {
   isLoadingButton: boolean;
   service: ReturnType<typeof useUserService>;
   
+  table: {
+    itemsPerPage: number;
+    tableLength: number;
+    tableCurrentPage: number;
+  }
+  
   objectViewMode: string;
-  itemsPerPage: number;
-  tableLength: number;
-  tableCurrentPage: number;
   openModal: boolean;
   showDeleteModal: boolean;
 }
@@ -126,11 +137,13 @@ const state: State = reactive({
   isLoadingButton: false,
   service: useUserService(),
 
+  table: {
+    itemsPerPage: 10,
+    tableLength: 0,
+    tableCurrentPage: 1,
+  },
+  
   objectViewMode: "",
-  itemsPerPage: 10,
-  tableLength: 0,
-  tableCurrentPage: 1,
-
   openModal: false,
   showDeleteModal: false,
 })
@@ -170,17 +183,22 @@ async function getUsers(params = '') {
     const { error, result } = await state.service.getUsers(params);
     console.log(result);
     
-    state.tableLength = result.total;
+    state.table.tableLength = result.total;
 
     if (state.users.value.length > 0) {
-      state.users.value.splice((state.tableCurrentPage - 1) * state.itemsPerPage, state.itemsPerPage, ...result.users);
+      state.users.value.splice((state.table.tableCurrentPage - 1) * state.table.itemsPerPage, state.table.itemsPerPage, ...result.users);
     } else {
       state.users.value = result.users
     }
     
   
     if (error) {
-      console.log(error);
+      return alertStore.add({
+        title: 'Falha ao buscar os usuários',
+        content: `O seguinte erro foi apresentado: ${error.message}`,
+        type: 'error',
+        icon: 'circle-xmark'
+      })
     }
 
   } finally {
@@ -194,13 +212,16 @@ async function getUser(userId: string) {
     state.isLoading = true;
     
     const { error, result } = await state.service.getUser(userId);
-    user.id = result.id
-    
+    Object.assign(user, result);
   
     if (error) {
-      console.log(error);
+      return alertStore.add({
+        title: 'Falha ao buscar o usuário',
+        content: `O seguinte erro foi apresentado: ${error.message}`,
+        type: 'error',
+        icon: 'circle-xmark'
+      })
     }
-
 
   } finally {
     state.isLoading = false;
@@ -216,17 +237,29 @@ async function createUser() {
     state.users.value.push(result);
   
     if (error) {
-      console.log(error);
+      return alertStore.add({
+        title: 'Falha ao criar um usuário',
+        content: `O seguinte erro foi apresentado: ${error.message}`,
+        type: 'error',
+        icon: 'circle-xmark'
+      })
     }
 
+    return alertStore.add({
+      title: 'Sucesso!',
+      content: 'Usuário criado com sucesso',
+      type: 'success',
+      icon: 'circle-check'
+    })
 
   } finally {
     state.isLoadingButton = false;
+    state.openModal = false;
   }
 }
 
 
-async function updateUser(id: string) {
+async function updateUser(id: number | string) {
   try {
     state.isLoadingButton = true;
 
@@ -235,11 +268,24 @@ async function updateUser(id: string) {
     state.users.value[index] = result;
 
     if (error) {
-      console.log(error);
+      return alertStore.add({
+        title: 'Falha ao atualizar um usuário',
+        content: `O seguinte erro foi apresentado: ${error.message}`,
+        type: 'error',
+        icon: 'circle-xmark'
+      })
     }
+
+    return alertStore.add({
+      title: 'Sucesso!',
+      content: 'Usuário atualizado com sucesso',
+      type: 'success',
+      icon: 'circle-check'
+    })
 
   } finally {
     state.isLoadingButton = false;
+    state.openModal = false;
   }
 }
 
@@ -248,22 +294,52 @@ async function deleteUser(id: number | string) {
   try {
     state.isLoadingButton = true;
 
-    const { error, result } = await state.service.deleteUser(id);
+    const { error } = await state.service.deleteUser(id);
     const index = state.users.value.findIndex(u => u.id === id);
-    
-    console.log(result);
-    console.log(index);
-    
-    // state.users.value.splice(index, 1);
+    state.users.value.splice(index, 1);
 
     if (error) {
-      console.log(error);
+      alertStore.add({
+        title: 'Falha ao excluir um usuário',
+        content: `O seguinte erro foi apresentado: ${error.message}`,
+        type: 'error',
+        icon: 'circle-xmark'
+      })
+    } else {
+      alertStore.add({
+        title: 'Sucesso!',
+        content: 'Usuário excluído com sucesso',
+        type: 'success',
+        icon: 'circle-check'
+      })
     }
+
 
   } finally {
     state.isLoadingButton = false;
+    state.showDeleteModal = false;
   }
 }
+
+function resetFields() {
+  Object.assign(user, {})
+}
+
+
+const getServices = computed(() => {
+  return {
+    getMany: getUsers,
+    get: getUser,
+  }
+})
+
+const crudServices = computed(() => {
+  return {
+    create: createUser,
+    update: updateUser,
+    delete: deleteUser,
+  }
+})
 </script>
 
 <style scoped lang="scss">

@@ -7,7 +7,7 @@
           <p class="modal-card-title">
             <slot name="header"></slot>
           </p>
-          <button class="modal-close" aria-label="close" @click="emit('close-modal')"></button>
+          <Icon icon="xmark" class="modal-close" @click="emit('close-modal')" />
         </header>
 
         <section class="modal-card-body">
@@ -86,18 +86,19 @@ const props = withDefaults(defineProps<Props>(), {
     max-width: 600px;
     width: 100%;
     background-color: white;
-    border-radius: 8px;
+    border-radius: .25rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, opacity 0.3s ease;
 
     .modal-card-head {
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
+      border-top-left-radius: .25rem;
+      border-top-right-radius: .25rem;
       border-bottom: 1px solid #eee;
+      color: var(--black-500);
 
       .modal-card-title {
         font-weight: 600;
-        font-size: 1.25rem;
+        font-size: 1rem;
         display: flex;
         align-items: center;  
       }
@@ -121,8 +122,8 @@ const props = withDefaults(defineProps<Props>(), {
 
     .modal-card-foot {
       border-top: 1px solid #eee;
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: .25rem;
+      border-bottom-right-radius: .25rem;
       padding: 0.75rem 1rem;
       justify-content: flex-end;
     }

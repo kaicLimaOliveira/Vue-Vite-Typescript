@@ -34,7 +34,7 @@ export function useUserService() {
     };
   };
 
-  const updateUser = async (id: string, payloadToUpdate: User): HttpResponse<User> => {
+  const updateUser = async (id: number | string, payloadToUpdate: User): HttpResponse<User> => {
     await fetchData('patch', `/users/${id}`, payloadToUpdate);
     return {
       error: error.value,
@@ -42,7 +42,7 @@ export function useUserService() {
     };
   };
 
-  const deleteUser = async (id: string): HttpResponse<User> => {
+  const deleteUser = async (id: number | string): HttpResponse<User> => {
     await fetchData('delete', `/users/${id}`);
     return {
       error: error.value,

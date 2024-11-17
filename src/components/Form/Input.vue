@@ -2,34 +2,31 @@
   <div class="control">
     <input
       class="input"
-      v-model="modelValue"
+      v-model="props.modelValue"
       v-bind="attrs"
       @input="handleInput"
     />
-    <slot />
+    <slot name="default" />
     <Icon v-if="props.icon" :icon="props.icon" />
   </div>
   <p class="help" v-if="props.helpText">{{ props.helpText }}</p>
 </template>
 
 <script lang="ts" setup>
-import { ref, useAttrs } from 'vue';
-import { InputProps } from '../../interfaces/Components';
+import { useAttrs } from 'vue';
+import { InputProps } from '../../interfaces/components/Input';
 
 const props = withDefaults(defineProps<InputProps>(), {})
-
 const attrs = useAttrs();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void;
+  'update:modelValue': [value: string];
 }>();
 
 const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement;
   emit('update:modelValue', target.value);
 };
-
-const modelValue = ref(props.modelValue);
 </script>
 
 <style lang="scss" scoped>
@@ -39,7 +36,7 @@ const modelValue = ref(props.modelValue);
   align-items: center;
 
   .input {
-    border: 1px solid #dbdbdb;
+    border: 1px solid var(--grey-500);
     border-radius: 4px;
     padding: 0.5rem 1rem;
     width: 100%;
@@ -61,6 +58,7 @@ const modelValue = ref(props.modelValue);
   svg {
     position: absolute;
     right: 1.75rem;
+    color: var(--black-600);
   }
 }
 

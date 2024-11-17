@@ -77,15 +77,7 @@
           <Button 
             :loading="props.actionButtonDisabled" 
             class="is-primary"
-            @click="() => {
-              emit('trigger-validation')
-              // if (props.canExecuteAction) {
-              //   // props.actionMiddleware(state.clickedAction)
-              //   state.confirmAction = false
-              //   return
-              // }
-              // showValidationAlert()
-            }"
+            @click="props.services[state.clickedAction](), state.confirmAction = false"
           >
             Confirmar
           </Button>
@@ -108,8 +100,9 @@ interface Props {
   actionButtonDisabled: boolean;
   currentMode?: string;
   services: {
-    create: () => Promise<any>;
-    update?: () => Promise<any>;
+    'create': () => Promise<any>;
+    'update': (args?: any) => Promise<any>;
+    'delete': (args?: any) => Promise<any>;
   }
 }
 
@@ -121,13 +114,13 @@ const props = withDefaults(defineProps<Props>(), {
 
 interface State {
   confirmAction: boolean;
-  clickedAction: string;
+  clickedAction: 'create' | 'update' | 'delete';
   objectViewMode: string;
 }
 
 const state: State = reactive({
   confirmAction: false,
-  clickedAction: '',
+  clickedAction: 'create',
   objectViewMode: 'view'
 })
 
@@ -149,20 +142,39 @@ watch(
 
 .footer-cover {
   position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: #FFF; 
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding: 16px;
-  background-color: rgb(255, 255, 255);
-  width: 100%;
-  height: 80%;
-  left: 0;
+  justify-content: end;
+  gap: 8px; 
+  border-top: 1px solid #dbdbdb; 
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  transition: all 0.5s ease-in-out;
+
+  .confirm-message {
+    font-weight: 600;
+    margin-right: 8px;
+    color: var(--black-500);
+  }
+
+  .button {
+    &.primary {
+      background-color: #3273dc;
+      color: #fff;
+    }
+
+    &.danger {
+      background-color: #ff3860;
+      color: #fff;
+    }
+  }
 }
 
-.confirm-message {
-  margin-right: 1rem;
-  font-weight: 600;
-}
 
 @keyframes loading-dots {
   0%, 100% {
@@ -188,7 +200,7 @@ watch(
 
 .slide-enter-active,
 .slide-leave-active {
-  transition: all 0.27s ease;
+  transition: all .3s ease;
 }
 
 .slide-enter-from,

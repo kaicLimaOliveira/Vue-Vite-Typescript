@@ -3,7 +3,7 @@
     <Label class="label" :for="id" :label="props.label"></Label>
     <Input
       :help-text="props.helpText"
-      v-model="modelValue"
+      :modelValue="props.modelValue"
       v-bind="attrs"
       @input="handleInput"
     />
@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useAttrs, ref } from 'vue';
+import { useAttrs } from 'vue';
 import Label from './Label.vue';
 
 interface InputProps {
@@ -34,8 +34,6 @@ const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement;
   emit('update:modelValue', target.value);
 };
-
-const modelValue = ref(props.modelValue);
 </script>
 
 <style lang="scss" scoped>

@@ -10,14 +10,12 @@ export const useAlertStore = defineStore('alert', {
     alerts: [],
   }),
   actions: {
-    add(el: Alert, timeout?: number) {
+    add(el: Alert, timeout = 5) {
       el.id = Math.round(Math.random() * 100000).toString()
       this.alerts.unshift(el)
 
-      if (timeout != undefined) {
-        setTimeout(() => this.remove(el), timeout * 1000)
-      }
-
+      const delay = timeout * 1000;
+      setTimeout(() => this.remove(el), delay)
     },
     remove(el: Alert) {
       const i = this.alerts.indexOf(el)

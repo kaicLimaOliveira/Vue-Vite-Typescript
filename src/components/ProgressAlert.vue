@@ -86,7 +86,6 @@ const alertStore = useAlertStore()
         width: 80%;
 
         &-title {
-          font-size: 15px;
           font-weight: bold;
           display: block;
         }

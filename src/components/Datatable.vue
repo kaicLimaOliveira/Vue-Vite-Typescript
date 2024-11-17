@@ -22,26 +22,14 @@
           @click="emit('clearFilters')"
           class="button is-red has-text-weight-medium mr-4">Limpar filtros</button> -->
           
-        <!-- <div class="show-items">
+        <div class="show-items">
           <Select 
-            label="Mostrar" 
-            :options="[
-              {
-                label: '10',
-                value: '10',
-              },
-              {
-                label: '25',
-                value: '25',
-              },
-              {
-                label: '50',
-                value: '50',
-              }
-            ]"
-            @update:model-value="state.itemsPerPage = $event as number"
+            label="Mostrar"
+            v-model="state.itemsPerPage" 
+            :options="state.selectOptions"
+            @update:model-value="state.itemsPerPage = $event"
           ></Select>
-        </div>   -->
+        </div>  
       </div>
 
       <div class="date-container">
@@ -51,13 +39,6 @@
             @update:model-value="state.date = $event"
           ></DatePicker> -->
         <!-- </div> -->
-
-        <Button 
-          v-if="props.enableCreate"
-          @click="emit('create')"
-        >
-          Novo
-        </Button>
       </div>
     </div>
     
@@ -140,6 +121,7 @@
         <div v-for="_ in 3" class="table-loader-container">
           <div class="table-loader-anim margin-table"></div>
           <div class="table-loader-anim margin-table"></div>
+          <div class="table-loader-anim margin-table"></div>
           <div class="table-loader-anim"></div>
         </div>
       </div>
@@ -150,12 +132,12 @@
 </template>
 
 <script setup lang="ts">
-import DebounceInput from "./Form/DebounceInput.vue";
+import DebounceInput from "./form/DebounceInput.vue";
 import Pagination from "./Pagination.vue";
 
 import { reactive, computed, watch, onMounted, ref } from "vue";
 import { parseQueryParams } from "../utils/parsers";
-import Select from "./Form/Select.vue";
+import Select from "./form/Select.vue";
 
 interface TableProps {
   headers: Record<string, string>;
@@ -167,15 +149,9 @@ interface TableProps {
     getMany: (params: any) => Promise<any>;
     get: (...params: any) => Promise<any>;
   };
-  itemsPerPage: number;
-  enableCreate?: boolean;
   enableUpdate?: boolean;
   enableDelete?: boolean;
   isLoading?: boolean;
-
-  queryParamsManyObjects?: any;
-  queryParamsSingleObject?: any; //Validar se está sendo usado
-
 
   idFieldName?: string;
   enableDateFilter?: boolean;
@@ -190,9 +166,6 @@ interface TableProps {
 
 const props = withDefaults(defineProps<TableProps>(), {
   tableLength: 0,
-  queryParamsManyObjects: {},
-  queryParamsSingleObject: {},
-  itemsPerPage: Number(localStorage.getItem('itemsPerPage')) || 10,
   enableUpdate: true,
   enableDelete: true,
   idFieldName: 'id',
@@ -216,7 +189,6 @@ const emit = defineEmits<{
   selectedItem: [value: number | string];
   'reset-reload': [];
   view: [value: number];
-  create: [];
   update: [value: number];
   delete: [value: number];
 }>();
@@ -232,6 +204,11 @@ interface State {
   iconClicked: string;
   scroll: boolean;
   itemsPerPage: number;
+
+  selectOptions: {
+    label: string;
+    value: string;
+  }[]
 }
 
 const state: State = reactive({
@@ -243,7 +220,21 @@ const state: State = reactive({
   icon: 'sort',
   iconClicked: '',
   scroll: false,
-  itemsPerPage: Number(localStorage.getItem('itemsPerPage')) ?? 10,
+  itemsPerPage: Number(localStorage.getItem('itemsPerPage')) || 10,
+  selectOptions: [
+    {
+      label: '10',
+      value: '10',
+    },
+    {
+      label: '25',
+      value: '25',
+    },
+    {
+      label: '50',
+      value: '50',
+    }
+  ]
 })
 
 onMounted(async () => {
@@ -298,9 +289,9 @@ const list = computed(() => {
     columnList.push(rowList)
   }
 
-  let pagesLength = Math.ceil(columnList.length / props.itemsPerPage)
+  let pagesLength = Math.ceil(columnList.length / state.itemsPerPage)
   for (let i = 0; i < pagesLength; i++) {
-    pagesList.push(columnList.splice(0, props.itemsPerPage))
+    pagesList.push(columnList.splice(0, state.itemsPerPage))
   }
 
   return pagesList
@@ -315,10 +306,10 @@ const computedHeaders = computed(() => {
 
 
 const tablePages = computed(() => {
-  return Math.ceil(props.tableLength / props.itemsPerPage)
+  return Math.ceil(props.tableLength / state.itemsPerPage)
 })
 
-const offset = computed(() => (state.page - 1) * props.itemsPerPage)
+const offset = computed(() => (state.page - 1) * state.itemsPerPage)
 
 watch(
   () => state.page,
@@ -327,7 +318,7 @@ watch(
     emit('currentPage', newValue)
 
     if (props.data.value.length <= offset.value) {
-      props.data.value.length = offset.value + props.itemsPerPage
+      props.data.value.length = offset.value + state.itemsPerPage
       queryFilterTable(false)
 
     } else if (props.data.value[offset.value] === undefined) {
@@ -365,7 +356,7 @@ watch(
   () => props.data.value.length,
   (newValue) => {
       
-    const limit = Math.ceil(newValue / props.itemsPerPage)
+    const limit = Math.ceil(newValue / state.itemsPerPage)
     if (limit < state.page && state.page != 1) {
       state.page--
     }
@@ -392,7 +383,7 @@ watch(
 )
 
 watch(
-  () => props.itemsPerPage,
+  () => state.itemsPerPage,
   (newValue) => {
     state.itemsPerPage = newValue ?? 10
     queryFilterTable()
@@ -401,10 +392,10 @@ watch(
 
 function selectItem(id: number | string, emitOption: any) {
   emit('selectedItem', id)
-  props.service?.get(id, parseQueryParams(props.queryParamsSingleObject))
-  .then((res: any) => {
-    if (emitOption) emit(emitOption, res)
-  })
+  props.service?.get(id)
+    .then((res: any) => {
+      if (emitOption) emit(emitOption, res)
+    })
 }
 
 async function queryFilterTable(resetOffset = true) {
@@ -417,7 +408,7 @@ async function queryFilterTable(resetOffset = true) {
   const params = {
     'search': state.search,
     'skip': offset.value,
-    'limit': props.itemsPerPage
+    'limit': state.itemsPerPage
   }
 
   await props.service?.getMany(parseQueryParams(params));  
@@ -468,6 +459,10 @@ function iconOrder(header: string) {
 
       .filter {
         margin: 0 1rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        border-radius: 4px;
+        cursor: pointer;
       }
       
       .show-items {

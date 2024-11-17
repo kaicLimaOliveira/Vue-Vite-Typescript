@@ -24,5 +24,7 @@ const attrs = useAttrs();
   font-weight: bold;
   margin-bottom: 0.5rem;
   display: block;
+  font-size: 0.875rem;
+  color: var(--black-500);
 }
 </style>

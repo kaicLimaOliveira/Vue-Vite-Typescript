@@ -30,7 +30,9 @@
 <script setup lang="ts">
 import { debounce } from '../../utils/inputs';
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits<{
+  'update:modelValue': [value: string];
+}>();
 
 interface Props {
   placeholder?: string;

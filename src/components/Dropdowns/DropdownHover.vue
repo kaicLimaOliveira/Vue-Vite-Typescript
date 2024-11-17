@@ -54,7 +54,6 @@ const deactivateDropdown = () => {
   position: relative;
 
   .dropdown-trigger {
-    margin-right: 12px;
 
     .button {
       border: none;
