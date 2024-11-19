@@ -18,15 +18,11 @@
 
 <script setup lang="ts">
 import { computed, useAttrs } from 'vue';
-import { ButtonProps } from '../interfaces/Components';
+import { ButtonProps, ButtonEmits } from '../interfaces/components/Button';
 
 
 const props = defineProps<ButtonProps>();
-
-const emit = defineEmits<{
-  (e: 'click'): void;
-}>();
-
+const emit = defineEmits<ButtonEmits>();
 
 const attrs = useAttrs();
 const typeClass = computed(() => (props.type ? `is-${props.type}` : ''));

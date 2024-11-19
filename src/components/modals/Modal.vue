@@ -27,17 +27,12 @@
 </template>
 
 <script setup lang="ts">
-const emit = defineEmits<{
-  (event: "close-modal"): void,
-}>()
+import { ModalEmits, ModalProps } from '../../interfaces/components/Modal';
 
-interface Props {
-  open: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const emit = defineEmits<ModalEmits>();
+const props = withDefaults(defineProps<ModalProps>(), {
   open: false,
-})
+});
 </script>
 
 <style lang="scss" scoped>

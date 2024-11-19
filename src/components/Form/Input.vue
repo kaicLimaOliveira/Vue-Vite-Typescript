@@ -2,7 +2,7 @@
   <div class="control">
     <input
       class="input"
-      v-model="props.modelValue"
+      v-model="model"
       v-bind="attrs"
       @input="handleInput"
     />
@@ -16,16 +16,13 @@
 import { useAttrs } from 'vue';
 import { InputProps } from '../../interfaces/components/Input';
 
-const props = withDefaults(defineProps<InputProps>(), {})
+const model = defineModel<string>()
+const props = withDefaults(defineProps<InputProps>(), {});
 const attrs = useAttrs();
-
-const emit = defineEmits<{
-  'update:modelValue': [value: string];
-}>();
 
 const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement;
-  emit('update:modelValue', target.value);
+  model.value = target.value;
 };
 </script>
 

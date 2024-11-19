@@ -1,9 +1,9 @@
 <template>
   <div class="input-field">
-    <Label class="label" :for="id" :label="props.label"></Label>
+    <Label class="label" :for="id">{{ props.label }}</Label>
     <Input
       :help-text="props.helpText"
-      :modelValue="props.modelValue"
+      v-model="model"
       v-bind="attrs"
       @input="handleInput"
     />
@@ -13,26 +13,22 @@
 
 <script lang="ts" setup>
 import { useAttrs } from 'vue';
-import Label from './Label.vue';
+import Label from '../form/Label.vue'
 
-interface InputProps {
+const model = defineModel<string>()
+
+interface FormControlProps {
   id?: string;
   label: string;
   helpText?: string;
-  modelValue: string;
 }
 
-const props = withDefaults(defineProps<InputProps>(), {})
-
+const props = withDefaults(defineProps<FormControlProps>(), {})
 const attrs = useAttrs();
-
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void;
-}>();
 
 const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement;
-  emit('update:modelValue', target.value);
+  model.value = target.value;
 };
 </script>
 

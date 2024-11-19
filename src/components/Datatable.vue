@@ -27,7 +27,6 @@
             label="Mostrar"
             v-model="state.itemsPerPage" 
             :options="state.selectOptions"
-            @update:model-value="state.itemsPerPage = $event"
           ></Select>
         </div>  
       </div>
@@ -134,10 +133,10 @@
 <script setup lang="ts">
 import DebounceInput from "./form/DebounceInput.vue";
 import Pagination from "./Pagination.vue";
+import Select from "./form/Select.vue";
 
 import { reactive, computed, watch, onMounted, ref } from "vue";
 import { parseQueryParams } from "../utils/parsers";
-import Select from "./form/Select.vue";
 
 interface TableProps {
   headers: Record<string, string>;

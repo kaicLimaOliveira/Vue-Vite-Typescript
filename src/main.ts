@@ -9,10 +9,10 @@ import vMask from './directives/vMask';
 import vTooltip from './directives/vTooltip';
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import Input from './components/Form/Input.vue'
+import Input from './components/form/Input.vue'
 import Button from './components/Button.vue';
 import Modal from './components/modals/Modal.vue';
-import Select from './components/Form/Select.vue';
+import Select from './components/form/Select.vue';
 
 
 const pinia = createPinia();

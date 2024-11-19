@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import Button from '../components/Button.vue';
-import FormControl from '../components/Form/FormControl.vue';
+import FormControl from '../components/form/FormControl.vue';
 import LoginLayout from '../layouts/login-layout.vue';
 
 import { reactive } from 'vue';

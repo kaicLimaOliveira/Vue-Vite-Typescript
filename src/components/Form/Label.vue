@@ -1,6 +1,6 @@
 <template>
   <label class="label" :for="props.id" v-bind="attrs">
-    {{ props.label }}
+    <slot />
   </label>
 </template>
 
@@ -9,13 +9,9 @@ import { useAttrs } from 'vue';
 
 interface LabelProps  {
   id?: string;
-  label: string;
 }
 
-const props = withDefaults(defineProps<LabelProps>(), {
-  label: "Label"
-})
-
+const props = withDefaults(defineProps<LabelProps>(), {})
 const attrs = useAttrs();
 </script>
 

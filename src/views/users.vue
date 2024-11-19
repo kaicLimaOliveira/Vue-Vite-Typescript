@@ -95,8 +95,7 @@
 <script setup lang="ts">
 import CrudModal from '../components/modals/CrudModal.vue';
 import Datatable from '../components/Datatable.vue';
-import FormControl from '../components/Form/FormControl.vue';
-import Modal from '../components/modals/Modal.vue';
+import FormControl from '../components/form/FormControl.vue';
 
 import { computed, reactive } from 'vue';
 import { User } from '../interfaces/User';

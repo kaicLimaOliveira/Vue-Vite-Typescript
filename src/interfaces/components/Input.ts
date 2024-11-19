@@ -14,8 +14,6 @@ interface InputEmits {
    * Emitted when the value changes.
    * @param {string} value - New value.
    */
-  
-  (event: 'update:modelValue', value: string): void
 }
 
 interface InputSlots {

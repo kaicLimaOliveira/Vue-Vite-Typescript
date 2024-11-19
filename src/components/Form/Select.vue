@@ -2,7 +2,7 @@
   <div class="select">
     <select 
       v-bind="attrs" 
-      v-model="state.option"
+      v-model="model"
       @change="handleSelect"
     >
       <option value="" disabled selected>Selecione</option>
@@ -16,35 +16,16 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, useAttrs } from 'vue';
+import { useAttrs } from 'vue';
+import { SelectProps } from '../../interfaces/components/Select';
 
+const model = defineModel<number>();
 const attrs = useAttrs();
-
-interface SelectProps {
-  options: {
-    label: string;
-    value: string;
-  }[];
-  modelValue: number;
-}
-
-const props = withDefaults(defineProps<SelectProps>(), {})
-
-interface State {
-  option: number;
-}
-
-const state: State = reactive({
-  option: props.modelValue
-})
-
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: number): void;
-}>();
+const props = withDefaults(defineProps<SelectProps>(), {});
 
 function handleSelect(event: Event) {
-  const value = (event.target as HTMLInputElement).value
-  emit('update:modelValue', Number(value));
+  const target = event.target as HTMLInputElement;
+  model.value = Number(target.value);
 }
 </script>
 

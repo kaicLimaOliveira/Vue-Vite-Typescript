@@ -10,7 +10,7 @@
         ></FormControl>
 
         <div class="password">
-          <Label label="Senha"></Label>
+          <Label>Senha</Label>
           <Input 
             v-model="loginState.senha"
             :type="state.showPassword ? 'text': 'password'"
@@ -39,8 +39,8 @@
 </template>
 
 <script setup lang="ts">
-import FormControl from '../components/Form/FormControl.vue';
-import Label from '../components/Form/Label.vue';
+import FormControl from '../components/form/FormControl.vue';
+import Label from '../components/form/Label.vue';
 import LoginLayout from '../layouts/login-layout.vue';
 
 import { reactive } from 'vue';
