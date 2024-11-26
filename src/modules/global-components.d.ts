@@ -1,8 +1,8 @@
 import { ClassComponent, GlobalComponentConstructor } from './helpers';
 
 import { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome';
-import { InputProps, InputEmits, InputSlots } from '../interfaces/components/Input'
-import { SelectEmits, SelectProps } from '../interfaces/components/Select';
+import { InputProps, InputSlots } from '../interfaces/components/Input'
+import { SelectProps } from '../interfaces/components/Select';
 import { ButtonProps, ButtonEmits, ButtonSlots } from '../interfaces/components/Button';
 import { ModalEmits, ModalProps, ModalSlots } from '../interfaces/components/Modal';
 

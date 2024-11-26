@@ -1,70 +1,108 @@
 <template>
-  <div class="select">
-    <select 
-      v-bind="attrs" 
-      v-model="model"
-      @change="handleSelect"
-    >
-      <option value="" disabled selected>Selecione</option>
-      <option :value v-for="{ label, value } in props.options">
-        {{ label }}
-      </option>
-    </select>
+  <div class="select" @click="toggleDropdown">
+    <div class="select-trigger">
+      <span>
+        {{ selectedOption?.label || 'Selecione' }}
+      </span>
+      <Icon icon="angle-down" class="select-icon" />
+    </div>
 
-    <Icon icon="angle-down" class="select-icon" />
+    <ul v-if="isOpen" class="dropdown">
+      <li 
+        v-for="{ label, value } in props.options" 
+        :key="value" 
+        class="dropdown-item" 
+        @click="selectOption(value)"
+      >
+        {{ label }}
+      </li>
+    </ul>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue';
+import { ref, computed } from 'vue';
 import { SelectProps } from '../../interfaces/components/Select';
 
-const model = defineModel<number>();
-const attrs = useAttrs();
 const props = withDefaults(defineProps<SelectProps>(), {});
+const model = defineModel<number | null>();
+const isOpen = ref(false);
 
-function handleSelect(event: Event) {
-  const target = event.target as HTMLInputElement;
-  model.value = Number(target.value);
-}
+const selectedOption = computed(() =>
+  props.options.find(option => option.value === model.value) || null
+);
+
+const toggleDropdown = () => {
+  isOpen.value = !isOpen.value;
+};
+
+const selectOption = (value: number | null) => {
+  model.value = value;
+  isOpen.value = false;
+};
+
+const handleClickOutside = (event: Event) => {
+  const target = event.target as HTMLElement;
+  if (!target.closest('.select')) {
+    isOpen.value = false;
+  }
+};
+
+document.addEventListener('click', handleClickOutside);
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .select {
   position: relative;
   cursor: pointer;
-  
-  select {
-    font-size: 1rem;
-    padding: 0.5rem 2rem 0.5rem 0.5rem;
+  user-select: none;
+
+  .select-trigger {
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem;
     border: 1px solid #ccc;
-    border-radius: 4px; 
+    border-radius: 4px;
     background-color: #fff;
     color: #333;
     transition: border-color 0.2s ease, background-color 0.2s ease;
-    width: 100%;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    
-    &:focus {
-      outline: none;
+
+    span {
+      overflow: hidden;
     }
 
-    &::-ms-expand {
-      display: none; 
+    .select-icon {
+      margin-left: 0.5rem;
+      font-size: 1rem;
+      pointer-events: none;
     }
   }
 
-  .select-icon {
+  .dropdown {
     position: absolute;
-    width: 20px;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 1rem;
-    color: #333;
-    pointer-events: none;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 0;
+    list-style: none;
+
+    .dropdown-item {
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+  
+      &:hover {
+        background-color: #f0f0f0;
+      }
+    }
   }
 }
 </style>

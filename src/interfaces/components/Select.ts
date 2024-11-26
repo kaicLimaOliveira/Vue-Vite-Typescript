@@ -14,7 +14,7 @@ interface SelectProps {
    */
   options: {
     label: string;
-    value: string;
+    value: number;
   }[];
 
   /**
@@ -30,14 +30,6 @@ interface SelectProps {
   modelValue: number;
 }
 
-interface SelectEmits {
-  /**
-   * Emitted when the value changes.
-   * @param {number} value - New value.
-   */
-}
-
 export {
   SelectProps,
-  SelectEmits,
 }

@@ -1,29 +1,26 @@
 <template>
-  <LoginLayout>
-    <form>
-      <h2 class="title">Entre com seu e-mail</h2>
-      <div class="content">
-        <FormControl v-model="state.email" label="E-mail"></FormControl>
+  <form>
+    <h2 class="title">Entre com seu e-mail</h2>
+    <div class="content">
+      <FormControl v-model="state.email" label="E-mail"></FormControl>
 
-        <div class="separator">Recuperação de senha</div>
-        <RouterLink :to="{ name: 'Login'}" class="button is-primary">
-          <Button>
-            Voltar
-          </Button>
-        </RouterLink>
-
-        <Button class="button is-primary"> 
-          Enviar
+      <div class="separator">Recuperação de senha</div>
+      <RouterLink :to="{ name: 'Login'}" class="button is-primary">
+        <Button>
+          Voltar
         </Button>
-      </div>
-    </form>
-  </LoginLayout>
+      </RouterLink>
+
+      <Button class="button is-primary"> 
+        Enviar
+      </Button>
+    </div>
+  </form>
 </template>
 
 <script setup lang="ts">
 import Button from '../components/Button.vue';
 import FormControl from '../components/form/FormControl.vue';
-import LoginLayout from '../layouts/login-layout.vue';
 
 import { reactive } from 'vue';
 

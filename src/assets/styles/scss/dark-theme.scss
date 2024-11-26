@@ -1,10 +1,10 @@
 .dark-theme {
-  background-color: #272727  !important;
-  color: #cecece !important;
+  background :color-mix(in oklab, var(--dark-background) ,white 10%) !important;
+  color: var(--dark-text) !important;
 
   .nav-content {
-    background-color: #272727  !important;
-    border-bottom: 1px solid #393939 !important;
+    background-color: var(--dark-background)  !important;
+    border-color: color-mix(in oklab, var(--dark-background), white 4%) !important;
   }
 
   .page-loader {
@@ -12,19 +12,97 @@
   }
 
   .sidebar {
-    background-color: #272727  !important;
+    background-color: var(--dark-background)  !important;
     border-right: 1px solid #393939 !important;
 
     .router-link {
-      color: #cecece !important;
+      color: var(--dark-text) !important;
 
       svg {
-        color: #242427 !important;
+        color: var(--dark-background) !important;
       }
     }
   }
 
-  svg {
-    color: #cecece !important;
+  .datatable {
+    background: color-mix(in oklab, var(--dark-background), white 6%) !important;
+    // color: #d5d5d5 !important;
+
+    table {
+      border-color: color-mix(in oklab, var(--dark-background), white 12%) !important;
+      background: color-mix(in oklab, var(--dark-background), white 6%) !important;
+
+      thead {
+        background-color: transparent !important;
+  
+        th {
+          border-color: color-mix(in oklab, var(--dark-background), white 12%) !important;
+          color: var(--dark-text) !important;
+        }
+      }
+
+      tbody {
+        tr {
+          background-color: transparent !important;
+
+          &:hover {
+            background: var(--dark-background) !important;
+          }
+        }
+      }
+    }
+  }
+
+  .select {
+
+    .select-trigger, .dropdown {
+      background-color: color-mix(in oklab, var(--dark-background), white 2%) !important;
+      border-color: color-mix(in oklab, var(--dark-background), white 4%) !important;
+    }
+
+    .dropdown-item:hover {
+      background-color: var(--dark-background) !important;
+    }
+  }
+
+  .input, 
+  .button, 
+  .notifications,
+  .dropdown-menu {
+    background-color: color-mix(in oklab, var(--dark-background), white 2%) !important;
+    border-color: color-mix(in oklab, var(--dark-background), white 4%) !important;
+    color: var(--dark-text) !important;
+
+    svg {
+      color: var(--dark-text) !important;
+    }
+  }
+
+  .label, span {
+    color: var(--dark-text) !important;
+  }
+
+  .modal-card {
+    background: color-mix(in oklab, var(--dark-background), white 6%) !important;
+    color: var(--dark-text) !important;
+
+    &-head {
+      background: color-mix(in oklab, var(--dark-background), white 6%) !important;
+      border-color: color-mix(in oklab, var(--dark-background), white 12%) !important;
+
+      .modal-card-title {
+        color: var(--dark-text) !important;
+      }
+
+      .modal-close {
+        color: #999;
+      }
+    }
+    
+    &-foot, .footer-cover {
+      background: color-mix(in oklab, var(--dark-background), white 6%) !important;
+      color: var(--dark-text) !important;
+      border-color: color-mix(in oklab, var(--dark-background), white 12%) !important;
+    }
   }
 }

@@ -26,6 +26,7 @@ import {
     faCircleExclamation,
     faCircleXmark,
     faXmark,
+    faFileCsv,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -53,4 +54,5 @@ library.add(
     faCircleExclamation,
     faCircleXmark,
     faXmark,
+    faFileCsv,
 );

@@ -1,47 +1,44 @@
 <template>
-  <LoginLayout>
-    <form @submit.prevent="login">
-      <h2 class="title">Acesse sua conta</h2>
-      <div class="content">
-        <FormControl 
-          v-model="loginState.email" 
-          label="E-mail"
-          icon="user"
-        ></FormControl>
+  <form @submit.prevent="login">
+    <h2 class="title">Acesse sua conta</h2>
+    <div class="content">
+      <FormControl 
+        v-model="loginState.email" 
+        label="E-mail"
+        icon="user"
+      ></FormControl>
 
-        <div class="password">
-          <Label>Senha</Label>
-          <Input 
-            v-model="loginState.senha"
-            :type="state.showPassword ? 'text': 'password'"
-          >
-            <Icon 
-              :icon="state.showPassword ? 'eye-slash': 'eye'" 
-              @click="state.showPassword = !state.showPassword"
-            ></Icon>
-          </Input>
+      <div class="password">
+        <Label>Senha</Label>
+        <Input 
+          v-model="loginState.senha"
+          :type="state.showPassword ? 'text': 'password'"
+        >
+          <Icon 
+            :icon="state.showPassword ? 'eye-slash': 'eye'" 
+            @click="state.showPassword = !state.showPassword"
+          ></Icon>
+        </Input>
 
-          <div class="forget-password">
-            <RouterLink :to="{ name: 'ForgottenPassword' }">
-              Esqueci minha senha
-            </RouterLink>
-          </div>
+        <div class="forget-password">
+          <RouterLink :to="{ name: 'ForgottenPassword' }">
+            Esqueci minha senha
+          </RouterLink>
         </div>
-
-        <div class="separator">Fazer login</div>
-
-        <Button class="button is-primary">
-          ENTRAR
-        </Button>
       </div>
-    </form>
-  </LoginLayout>
+
+      <div class="separator">Fazer login</div>
+
+      <Button class="button is-primary">
+        ENTRAR
+      </Button>
+    </div>
+  </form>
 </template>
 
 <script setup lang="ts">
 import FormControl from '../components/form/FormControl.vue';
 import Label from '../components/form/Label.vue';
-import LoginLayout from '../layouts/login-layout.vue';
 
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router'

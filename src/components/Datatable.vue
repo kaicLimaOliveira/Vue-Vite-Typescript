@@ -12,26 +12,35 @@
           @update:modelValue="state.search = $event"
         ></DebounceInput>
 
-        <Icon 
-          icon="filter"
-          class="filter"
-          @click="emit('filter', true)"
-        ></Icon>
-
-        <!-- <button 
-          @click="emit('clearFilters')"
-          class="button is-red has-text-weight-medium mr-4">Limpar filtros</button> -->
+        <div class="filter">
+          <Icon 
+            icon="filter"
+            @click="emit('filter', true)"
+          ></Icon>
+        </div>
           
-        <div class="show-items">
+        <div class="show-items" v-if="props.tableOptions?.showItems">
           <Select 
             label="Mostrar"
-            v-model="state.itemsPerPage" 
+            v-model="itemsPerPage" 
             :options="state.selectOptions"
+            style="width: 70px;"
           ></Select>
         </div>  
       </div>
 
+      <div>
+        
+      </div>
+
       <div class="date-container">
+        <div class="filter" v-if="props.tableOptions?.showExportFileCSV">
+          <Icon 
+            icon="file-csv"
+            @click="jsonToCsv(props.data.value)"
+          ></Icon>
+        </div>
+
         <!-- <div class="is-flex is-align-items-center" v-if="enableDateFilter"> -->
           <!-- <DatePicker 
             :start-date="dateFilterStart" 
@@ -137,6 +146,7 @@ import Select from "./form/Select.vue";
 
 import { reactive, computed, watch, onMounted, ref } from "vue";
 import { parseQueryParams } from "../utils/parsers";
+import { useFileConverter } from "../composables/useFileConverter";
 
 interface TableProps {
   headers: Record<string, string>;
@@ -151,6 +161,11 @@ interface TableProps {
   enableUpdate?: boolean;
   enableDelete?: boolean;
   isLoading?: boolean;
+
+  tableOptions?: {
+    showExportFileCSV?: boolean;
+    showItems?: boolean;
+  };
 
   idFieldName?: string;
   enableDateFilter?: boolean;
@@ -175,7 +190,7 @@ const props = withDefaults(defineProps<TableProps>(), {
   reloadTable: false,
   selectedObj: 0,
   viewMode: 'view',
-  canLoadData: true
+  canLoadData: true,
 })
 
 
@@ -202,11 +217,10 @@ interface State {
   icon: string;
   iconClicked: string;
   scroll: boolean;
-  itemsPerPage: number;
 
   selectOptions: {
     label: string;
-    value: string;
+    value: number;
   }[]
 }
 
@@ -219,22 +233,25 @@ const state: State = reactive({
   icon: 'sort',
   iconClicked: '',
   scroll: false,
-  itemsPerPage: Number(localStorage.getItem('itemsPerPage')) || 10,
   selectOptions: [
     {
       label: '10',
-      value: '10',
+      value: 10,
     },
     {
       label: '25',
-      value: '25',
+      value: 25,
     },
     {
       label: '50',
-      value: '50',
+      value: 50,
     }
   ]
 })
+
+const itemsPerPage = defineModel<number>('itemsPerPage', {
+  default: Number(localStorage.getItem('itemsPerPage') || 10)
+});
 
 onMounted(async () => {
   if (props.canLoadData) {
@@ -248,6 +265,7 @@ onMounted(async () => {
 
 const tableContainer = ref<HTMLElement | null>(null)
 
+const { jsonToCsv } = useFileConverter();
 function handleScroll() {
   if (tableContainer.value){
     if (tableContainer.value.scrollWidth === tableContainer.value.clientWidth) {
@@ -288,9 +306,9 @@ const list = computed(() => {
     columnList.push(rowList)
   }
 
-  let pagesLength = Math.ceil(columnList.length / state.itemsPerPage)
+  let pagesLength = Math.ceil(columnList.length / itemsPerPage.value)
   for (let i = 0; i < pagesLength; i++) {
-    pagesList.push(columnList.splice(0, state.itemsPerPage))
+    pagesList.push(columnList.splice(0, itemsPerPage.value))
   }
 
   return pagesList
@@ -305,10 +323,10 @@ const computedHeaders = computed(() => {
 
 
 const tablePages = computed(() => {
-  return Math.ceil(props.tableLength / state.itemsPerPage)
+  return Math.ceil(props.tableLength / itemsPerPage.value)
 })
 
-const offset = computed(() => (state.page - 1) * state.itemsPerPage)
+const offset = computed(() => (state.page - 1) * itemsPerPage.value)
 
 watch(
   () => state.page,
@@ -317,7 +335,7 @@ watch(
     emit('currentPage', newValue)
 
     if (props.data.value.length <= offset.value) {
-      props.data.value.length = offset.value + state.itemsPerPage
+      props.data.value.length = offset.value + itemsPerPage.value
       queryFilterTable(false)
 
     } else if (props.data.value[offset.value] === undefined) {
@@ -326,23 +344,23 @@ watch(
   }
 )
 
-watch(
-  () => state.date,
-  (newDate, oldDate) => {
+// watch(
+//   () => state.date,
+//   (newDate, oldDate) => {
 
-    if (!oldDate) {
-      emit('dateValue', newDate)
-      return
-    }
+//     if (!oldDate) {
+//       emit('dateValue', newDate)
+//       return
+//     }
 
-    const [nSt, nEd] = newDate
-    const [oSt, oEd] = oldDate
+//     const [nSt, nEd] = newDate
+//     const [oSt, oEd] = oldDate
 
-    if (nSt.toLocaleDateString() != oSt.toLocaleDateString() || nEd.toLocaleDateString() != oEd.toLocaleDateString()) {
-      emit('dateValue', newDate)
-    }
-  }
-)
+//     if (nSt.toLocaleDateString() != oSt.toLocaleDateString() || nEd.toLocaleDateString() != oEd.toLocaleDateString()) {
+//       emit('dateValue', newDate)
+//     }
+//   }
+// )
 
 watch(
   () => state.search,
@@ -355,22 +373,22 @@ watch(
   () => props.data.value.length,
   (newValue) => {
       
-    const limit = Math.ceil(newValue / state.itemsPerPage)
+    const limit = Math.ceil(newValue / itemsPerPage.value)
     if (limit < state.page && state.page != 1) {
       state.page--
     }
   }
 )
 
-watch(
-  () => props.reloadTable,
-  (newValue) => {
-    if (newValue) {
-      queryFilterTable()
-      emit('reset-reload')
-    }
-  }
-)
+// watch(
+//   () => props.reloadTable,
+//   (newValue) => {
+//     if (newValue) {
+//       queryFilterTable()
+//       emit('reset-reload')
+//     }
+//   }
+// )
 
 watch(
   () => props.selectedObj,
@@ -382,9 +400,9 @@ watch(
 )
 
 watch(
-  () => state.itemsPerPage,
+  () => itemsPerPage.value,
   (newValue) => {
-    state.itemsPerPage = newValue ?? 10
+    itemsPerPage.value = newValue ?? 10
     queryFilterTable()
   }
 )
@@ -407,7 +425,7 @@ async function queryFilterTable(resetOffset = true) {
   const params = {
     'search': state.search,
     'skip': offset.value,
-    'limit': state.itemsPerPage
+    'limit': itemsPerPage.value
   }
 
   await props.service?.getMany(parseQueryParams(params));  
@@ -455,14 +473,6 @@ function iconOrder(header: string) {
     .datatable-options-left {
       display: flex;
       align-items: center;
-
-      .filter {
-        margin: 0 1rem;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        padding: 10px;
-        border-radius: 4px;
-        cursor: pointer;
-      }
       
       .show-items {
         font-weight: medium; 
@@ -472,6 +482,18 @@ function iconOrder(header: string) {
           display: flex;
           align-items: center;
         }
+      }
+    }
+
+    .filter {
+      margin: 0 1rem;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #ddd;
       }
     }
 

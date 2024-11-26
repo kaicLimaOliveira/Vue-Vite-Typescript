@@ -4,7 +4,6 @@
       class="input"
       v-model="model"
       v-bind="attrs"
-      @input="handleInput"
     />
     <slot name="default" />
     <Icon v-if="props.icon" :icon="props.icon" />
@@ -19,11 +18,6 @@ import { InputProps } from '../../interfaces/components/Input';
 const model = defineModel<string>()
 const props = withDefaults(defineProps<InputProps>(), {});
 const attrs = useAttrs();
-
-const handleInput = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  model.value = target.value;
-};
 </script>
 
 <style lang="scss" scoped>
@@ -35,7 +29,7 @@ const handleInput = (event: Event) => {
   .input {
     border: 1px solid var(--grey-500);
     border-radius: 4px;
-    padding: 0.5rem 1rem;
+    padding: 8px 12px;
     width: 100%;
     transition: border-color 0.2s;
     font-size: 14px;

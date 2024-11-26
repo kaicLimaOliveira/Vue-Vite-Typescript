@@ -1,7 +1,7 @@
 <template>
-  <div class="crud-layout">
-    <div class="crud-layout-header">
-      <div class="crud-layout-header-title">
+  <div class="view">
+    <div class="view-header">
+      <div class="view-header-title">
         <span class="header-title">{{ props.title }}</span>
         <span v-if="props.subtitle" class="header-subtitle">
           {{ props.subtitle }}
@@ -14,8 +14,6 @@
         {{ buttonText }}
       </Button>
     </div>
-
-    <slot />
   </div>
 </template>
   
@@ -50,14 +48,14 @@ const state = reactive({
 </script>
   
 <style lang="scss" scoped>
-.crud-layout {
+.view {
   
-  .crud-layout-header {
+  .view-header {
     display: flex;
     justify-content: space-between;
     padding-bottom: 16px;
     
-    .crud-layout-header-title {
+    .view-header-title {
       display: flex;
       text-align: left;
       flex-direction: column;

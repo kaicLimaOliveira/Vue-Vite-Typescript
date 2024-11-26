@@ -58,8 +58,8 @@
 </template>
  
 <script setup lang="ts">
-import Dropdown from "./Dropdowns/Dropdown.vue";
-import DropdownHover from "./Dropdowns/DropdownHover.vue";
+import Dropdown from "./dropdowns/Dropdown.vue";
+import DropdownHover from "./dropdowns/DropdownHover.vue";
 import NotificationsBell from "./NotificationsBell.vue";
  
 import { reactive, ref } from "vue";

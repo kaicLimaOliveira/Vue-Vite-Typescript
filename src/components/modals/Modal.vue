@@ -107,6 +107,10 @@ const props = withDefaults(defineProps<ModalProps>(), {
         position: absolute;
         top: 0.75rem;
         right: 0.75rem;
+
+        &:hover {
+          color: var(--primary-color);
+        }
       }
     }
 

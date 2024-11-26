@@ -7,6 +7,10 @@ declare module 'vue-router' {
     enableNav: boolean;
     translatedName: string;
     icon?: string | string[];
+    layout?: {
+      component: () => Promise<any>;
+      props?: Record<string, any>
+    }
   }
 }
 
@@ -30,7 +34,7 @@ const routes: RouteRecordRaw[] = [
       requiresAuth: true,
       enableNav: true,
       translatedName: 'Usuários',
-      icon: 'user'
+      icon: 'user',
     },
   },
   {
@@ -40,7 +44,7 @@ const routes: RouteRecordRaw[] = [
     meta: {
       requiresAuth: true,
       enableNav: true,
-      translatedName: 'Usuários'
+      translatedName: 'Histórico de notificações'
     },
   },
   {
@@ -51,6 +55,9 @@ const routes: RouteRecordRaw[] = [
       requiresAuth: false,
       enableNav: false,
       translatedName: 'Login',
+      layout: {
+        component: () => import("../layouts/login-layout.vue")
+      }
     },
   },
   {
@@ -61,6 +68,9 @@ const routes: RouteRecordRaw[] = [
       requiresAuth: false,
       enableNav: false,
       translatedName: 'Recuperação de senha',
+      layout: {
+        component: () => import("../layouts/login-layout.vue")
+      }
     },
   },
   {

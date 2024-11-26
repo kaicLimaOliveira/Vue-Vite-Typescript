@@ -1,29 +1,34 @@
 <template>
   <div>
-    <!-- <CrudLayout
-      title="Cadastro de usuários"
+    <ViewHeader
+      title="Página de usuários"
+      subtitle="Cadastre os seus usuários"
       view-name="Users"
-      @click="state.openModal = true"
-    ></CrudLayout> -->
+      @click="[state.openModal = true, resetFields(), state.objectViewMode = 'create']"
+    ></ViewHeader>
 
     <Datatable 
       :headers
       :service="getServices" 
       :data="state.users"
-      :items-per-page="state.table.itemsPerPage"
-      :table-length="state.table.tableLength || 0"
+      :table-length="state.tableProps.tableLength || 0"
       :is-loading="state.isLoading"
       :enable-create="true"
       :enable-update="true"
       :enable-delete="true"
+      :table-options="{
+        showExportFileCSV: true,
+        showItems: true
+      }"
+      v-model:items-per-page="state.tableProps.itemsPerPage"
       @selected-item="state.selectUser = $event"
       @view="state.openModal = true, state.objectViewMode = 'view'"
       @update="state.openModal = true, state.objectViewMode = 'update'"
       @delete="state.showDeleteModal = true, state.objectViewMode = 'delete'"
-      @current-page="state.table.tableCurrentPage = $event"
+      @current-page="state.tableProps.tableCurrentPage = $event"
     ></Datatable>
 
-    <Teleport to="#app">
+    <Teleport to="#container">
       <CrudModal 
         :action-button-disabled="state.isLoadingButton"
         :open="state.openModal"
@@ -75,16 +80,16 @@
           </div>
         </template>
         <template #footer>
+          <Button class="is-danger mr-2" @click="state.showDeleteModal = false">
+            Cancelar
+          </Button>
+          
           <Button 
-            class="mr-2 is-link" 
+            class="is-link" 
             :loading="state.isLoadingButton"
             @click="deleteUser(user.id)"
           >
             Confirmar
-          </Button>
-          
-          <Button class="is-danger" @click="state.showDeleteModal = false">
-            Cancelar
           </Button>
         </template>
       </Modal>
@@ -99,33 +104,19 @@ import FormControl from '../components/form/FormControl.vue';
 
 import { computed, reactive } from 'vue';
 import { User } from '../interfaces/User';
+import { StateView } from '../interfaces/Generic';
 
 import { useUserService } from '../server/api/user';
 import { useAlertStore } from '../stores/alertStore';
-import CrudLayout from '../layouts/crud-layout.vue';
+import ViewHeader from '../components/ViewHeader.vue';
 
 
 const alertStore = useAlertStore();
 
-interface State {
-  users: {
-    value: User[]
-  };
+interface State extends StateView {
+  users: { value: User[] };
   selectUser: string | number;
-
-  isLoading: boolean;
-  isLoadingButton: boolean;
   service: ReturnType<typeof useUserService>;
-  
-  table: {
-    itemsPerPage: number;
-    tableLength: number;
-    tableCurrentPage: number;
-  }
-  
-  objectViewMode: string;
-  openModal: boolean;
-  showDeleteModal: boolean;
 }
 
 const state: State = reactive({
@@ -136,7 +127,7 @@ const state: State = reactive({
   isLoadingButton: false,
   service: useUserService(),
 
-  table: {
+  tableProps: {
     itemsPerPage: 10,
     tableLength: 0,
     tableCurrentPage: 1,
@@ -182,10 +173,10 @@ async function getUsers(params = '') {
     const { error, result } = await state.service.getUsers(params);
     console.log(result);
     
-    state.table.tableLength = result.total;
+    state.tableProps.tableLength = result.total;
 
     if (state.users.value.length > 0) {
-      state.users.value.splice((state.table.tableCurrentPage - 1) * state.table.itemsPerPage, state.table.itemsPerPage, ...result.users);
+      state.users.value.splice((state.tableProps.tableCurrentPage - 1) * state.tableProps.itemsPerPage, state.tableProps.itemsPerPage, ...result.users);
     } else {
       state.users.value = result.users
     }
@@ -321,7 +312,9 @@ async function deleteUser(id: number | string) {
 }
 
 function resetFields() {
-  Object.assign(user, {})
+  user.firstName = '';
+  user.lastName = '';
+  user.email = '';
 }
 
 

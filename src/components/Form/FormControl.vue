@@ -5,7 +5,6 @@
       :help-text="props.helpText"
       v-model="model"
       v-bind="attrs"
-      @input="handleInput"
     />
     <slot />
   </div>
@@ -25,11 +24,6 @@ interface FormControlProps {
 
 const props = withDefaults(defineProps<FormControlProps>(), {})
 const attrs = useAttrs();
-
-const handleInput = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  model.value = target.value;
-};
 </script>
 
 <style lang="scss" scoped>
