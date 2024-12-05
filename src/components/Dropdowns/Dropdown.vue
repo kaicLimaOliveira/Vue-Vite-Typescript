@@ -9,7 +9,11 @@
       :title="props.label"
     >
       <div class="dropdown-container-label">
-        <Icon :icon="props.icon" class="dropdown-container-label-icon" size="sm" />
+        <Icon 
+          v-if="props.icon" 
+          :icon="props.icon" class="dropdown-container-label-icon" 
+          size="sm" 
+        />
         <span class="dropdown-container-label-content">
           {{ props.label }}
         </span>
@@ -38,7 +42,7 @@
             :to="{ name: routeName, params }"
             :title="label"
           >
-            <Icon :icon class="dropdown-links-icon" size="sm" />
+            <Icon v-if="icon" :icon class="dropdown-links-icon" size="sm" />
             <span class="dropdown-links-label">{{ label }}</span>
           </RouterLink>
         </div>
@@ -50,20 +54,21 @@
 <script setup lang="ts">
 import { reactive, watch } from 'vue';
 import { Link } from '../../interfaces/Menu';
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
  
  
 const emit = defineEmits<{
   currentLinkHovered: [value: number | null]
 }>()
  
-interface Props {
+interface DropdownProps {
   links: Link[];
   label: string;
-  icon?: string | string[];
+  icon?: string | object | string[] | IconDefinition;
   isClosed: boolean;
 }
  
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<DropdownProps>(), {
   links: () => [],
   isClosed: false,
 })

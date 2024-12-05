@@ -9,7 +9,7 @@
  
       <div class="router-links">
         <div class="container-links">
-          <div class="links" v-for="{ params, label, icon, ...route } in props.routerLinks">
+          <div class="links" v-for="{ params, label, icon, ...route } in state.routerLinks">
             <RouterLink
               v-if="route.type == 'link'"
               class="router-link"
@@ -58,22 +58,21 @@
 </template>
  
 <script setup lang="ts">
-import Dropdown from "./dropdowns/Dropdown.vue";
-import DropdownHover from "./dropdowns/DropdownHover.vue";
-import NotificationsBell from "./NotificationsBell.vue";
+import Dropdown from "../components/dropdowns/Dropdown.vue";
+import DropdownHover from "../components/dropdowns/DropdownHover.vue";
+import NotificationsBell from "../components/NotificationsBell.vue";
  
 import { reactive, ref } from "vue";
 import { Menu } from "../interfaces/Menu"
 import { useDarkModeStore } from "../stores/darkStore";
 import { useRouter } from "vue-router";
+import { useNavbarStore } from "../stores/navbarStore";
 
 const router = useRouter();
- 
- 
 const sideBarState = ref(localStorage.getItem('sideBar') || 'opened')
+const { getAvailableNavbarRoutes } = useNavbarStore()
  
 interface NavbarProps {
-  routerLinks: Menu;
   imgSrc?: string;
 }
 
@@ -82,11 +81,13 @@ const props = withDefaults(defineProps<NavbarProps>(), {
 })
 
 interface State {
+  routerLinks: Menu;
   isLoadingImage: boolean;
   currentLinkHovered: number | null;
 }
  
 const state: State = reactive({
+  routerLinks: getAvailableNavbarRoutes(),
   isLoadingImage: false,
   currentLinkHovered: null,
 })

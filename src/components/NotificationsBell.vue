@@ -31,6 +31,7 @@
           >
             <div class="notifications-item-options">
               <div>
+                
                 <div class="notifications-line" :style="{ visibility: key == 0 ? 'hidden' : 'visible' }"></div>
                 <div class="notifications-dot" :class="notification.type"></div>
                 <div class="notifications-line" :style="{ visibility: key == firstNotifications.length - 1 ? 'hidden' : 'visible' }"></div>
@@ -42,9 +43,12 @@
               </div>
             </div>
 
-            <button @click.stop="[getNotification(notification.id), notificationStore.fullLength--]"
-              class="delete">
-            </button>
+            <Icon 
+              icon="circle-xmark"
+              size="10x"
+              @click.stop="[getNotification(notification.id), notificationStore.fullLength--]"
+              class="delete"
+            ></Icon>
           </div>
 
           <div v-show="notificationStore.fullLength > 4" class="notifications-history">
@@ -158,7 +162,7 @@ function getManyNotifications(params = '') {
     })
     .catch((err) => {
       alertStore.add({
-        type: 'danger',
+        type: 'error',
         title: 'Oops...',
         content: err.response.data.msg
       })
@@ -237,6 +241,9 @@ function queryFilterNotifications() {
       box-sizing: border-box;
       text-align: center;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 
@@ -329,6 +336,7 @@ function queryFilterNotifications() {
             }
   
             .notifications-line {
+              margin-left: 19px;
               width: 3px;
               height: 100%;
               background-color: rgb(223, 223, 223);
@@ -343,6 +351,10 @@ function queryFilterNotifications() {
           align-self: flex-start;
           margin: 0.5rem 0.5rem 0 0;
           font-size: .75rem;
+
+          &:hover {
+            opacity: 0.7 !important;
+          }
         }
     
         &:hover {
@@ -365,6 +377,10 @@ function queryFilterNotifications() {
           & small {
             font-size: 12px;
             color: #7a7a7a;
+          }
+
+          span, small {
+            width: 100%;
           }
         }
       }

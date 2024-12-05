@@ -9,7 +9,10 @@
 
     <Datatable 
       :headers
-      :service="getServices" 
+      :service="{
+        getMany: getUsers,
+        get: getUser,
+      }" 
       :data="state.users"
       :table-length="state.tableProps.tableLength || 0"
       :is-loading="state.isLoading"
@@ -33,7 +36,11 @@
         :action-button-disabled="state.isLoadingButton"
         :open="state.openModal"
         :current-mode="state.objectViewMode" 
-        :services="crudServices"
+        :services="{
+          create: createUser,
+          update: updateUser,
+          delete: deleteUser,
+        }"
         @close-modal="state.openModal = false"
       >
         <template #header>Tela de usuários</template>
@@ -80,7 +87,7 @@
           </div>
         </template>
         <template #footer>
-          <Button class="is-danger mr-2" @click="state.showDeleteModal = false">
+          <Button class="is-danger is-outlined mr-2" @click="state.showDeleteModal = false">
             Cancelar
           </Button>
           
@@ -316,22 +323,6 @@ function resetFields() {
   user.lastName = '';
   user.email = '';
 }
-
-
-const getServices = computed(() => {
-  return {
-    getMany: getUsers,
-    get: getUser,
-  }
-})
-
-const crudServices = computed(() => {
-  return {
-    create: createUser,
-    update: updateUser,
-    delete: deleteUser,
-  }
-})
 </script>
 
 <style scoped lang="scss">

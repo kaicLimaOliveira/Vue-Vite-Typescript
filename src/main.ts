@@ -1,15 +1,17 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue';
+import App from './App.vue';
 
-import { createPinia } from 'pinia'
+import { createPinia } from 'pinia';
 import router from './router/routes';
-import './plugins/fontawesome'
+
+import './router/guards';
+import './plugins/fontawesome';
 
 import vMask from './directives/vMask';
 import vTooltip from './directives/vTooltip';
 
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import Input from './components/form/Input.vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import Input from './components/form/Input.vue';
 import Button from './components/Button.vue';
 import Modal from './components/modals/Modal.vue';
 import Select from './components/form/Select.vue';

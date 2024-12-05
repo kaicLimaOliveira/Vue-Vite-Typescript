@@ -1,10 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import { useAuthStore } from '../stores/authStore';
 
 declare module 'vue-router' {
   interface RouteMeta {
     requiresAuth: boolean;
-    enableNav: boolean;
     translatedName: string;
     icon?: string | string[];
     layout?: {
@@ -22,8 +20,10 @@ const routes: RouteRecordRaw[] = [
     component: () => import("../views/index.vue"),
     meta: {
       requiresAuth: true,
-      enableNav: true,
       translatedName: 'Home',
+      layout: {
+        component: () => import("../layouts/side-nav-layout.vue"),
+      }
     },
   },
   {
@@ -32,9 +32,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import("../views/users.vue"),
     meta: {
       requiresAuth: true,
-      enableNav: true,
       translatedName: 'Usuários',
       icon: 'user',
+      layout: {
+        component: () => import("../layouts/side-nav-layout.vue"),
+      }
     },
   },
   {
@@ -43,8 +45,10 @@ const routes: RouteRecordRaw[] = [
     component: () => import("../views/notifications.vue"),
     meta: {
       requiresAuth: true,
-      enableNav: true,
-      translatedName: 'Histórico de notificações'
+      translatedName: 'Histórico de notificações',
+      layout: {
+        component: () => import("../layouts/side-nav-layout.vue"),
+      }
     },
   },
   {
@@ -53,7 +57,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import("../views/login.vue"),
     meta: {
       requiresAuth: false,
-      enableNav: false,
       translatedName: 'Login',
       layout: {
         component: () => import("../layouts/login-layout.vue")
@@ -66,7 +69,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import("../views/forgotten-password.vue"),
     meta: {
       requiresAuth: false,
-      enableNav: false,
       translatedName: 'Recuperação de senha',
       layout: {
         component: () => import("../layouts/login-layout.vue")
@@ -79,7 +81,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import("../views/not-found.vue"),
     meta: {
       requiresAuth: false,
-      enableNav: false,
       translatedName: 'Não encontrado'
     }
   }
@@ -89,16 +90,5 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 });
-
-router.beforeEach(async (to, from) => {
-  if (to.name === from.name) return
-  document.title = to.meta.translatedName
-  const authStore = useAuthStore()
-
-  // if (to.meta.requiresAuth && !authStore.isLoggedIn) {
-  //   authStore.isLoggedIn = true
-  // }
-})
-
 
 export default router;

@@ -5,7 +5,7 @@ interface Notification {
   type: NotificationTypes;
   title: string;
   seen?: boolean;
-  createdAt: string;
+  createdAt: string | Date;
   args: any;
 }
 

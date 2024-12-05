@@ -120,12 +120,72 @@ const handleClick = () => {
 
   &.is-outlined {
     background: none;
-    color: inherit;
     border-color: currentColor;
+    color: currentColor;
 
     &:hover:not(:disabled) {
       background-color: currentColor;
       color: #fff;
+    }
+  }
+
+  &.is-danger.is-outlined {
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+
+    &:hover:not(:disabled) {
+      background-color: var(--danger-color); 
+      color: #fff; 
+    }
+  }
+
+  &.is-primary.is-outlined {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+
+    &:hover:not(:disabled) {
+      background-color: var(--primary-color); 
+      color: #fff; 
+    }
+  }
+
+  &.is-link.is-outlined {
+    color: var(--link-color);
+    border-color: var(--link-color);
+
+    &:hover:not(:disabled) {
+      background-color: var(--link-color); 
+      color: #fff; 
+    }
+  }
+
+  &.is-info.is-outlined {
+    color: var(--info-color);
+    border-color: var(--info-color);
+
+    &:hover:not(:disabled) {
+      background-color: var(--info-color); 
+      color: #fff; 
+    }
+  }
+
+  &.is-success.is-outlined {
+    color: var(--success-color);
+    border-color: var(--success-color);
+
+    &:hover:not(:disabled) {
+      background-color: var(--success-color); 
+      color: #fff; 
+    }
+  }
+
+  &.is-warning.is-outlined {
+    color: var(--warning-color);
+    border-color: var(--warning-color);
+
+    &:hover:not(:disabled) {
+      background-color: var(--warning-color); 
+      color: #fff; 
     }
   }
 

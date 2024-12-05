@@ -1,8 +1,10 @@
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+
 interface MenuBase {
   label: string;
   routeName: string;
   params?: any;
-  icon?: string | string[];
+  icon?: string | object | string[] | IconDefinition;
 }
  
 interface Link extends MenuBase {

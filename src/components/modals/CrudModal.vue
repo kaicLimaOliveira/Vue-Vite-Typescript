@@ -14,7 +14,7 @@
     <template #footer>
       <slot name="footer">
         <div class="footer-buttons">
-          <Button class="is-danger light outlined"
+          <Button class="is-danger is-outlined"
             @click="emit('close-modal'), state.confirmAction = false"
           >
             Fechar
@@ -23,7 +23,7 @@
           <Button 
             v-if="state.objectViewMode !== 'create'"
             :loading="props.actionButtonDisabled" 
-            class="is-danger"
+            class="is-danger is-outlined"
             @click="state.confirmAction = true, state.clickedAction = 'delete'"
           >
             Deletar
@@ -68,7 +68,7 @@
           </span>
           <Button 
             :loading="props.actionButtonDisabled" 
-            class="is-danger"
+            class="is-danger is-outlined"
             @click="state.confirmAction = false"
           >
             Cancelar

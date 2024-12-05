@@ -6,23 +6,10 @@
         style="z-index: 9999;"
       ></ProgressAlert>
       
-      <Navbar v-if="route.meta.enableNav" :router-links="state.routerLinks">
-        <Transition name="fade" mode="out-in">
-          <component 
-            :is="layoutComponent || 'div'" 
-            class="component" 
-            :key="route.path"
-            v-bind="layoutProps"
-          >
-            <component :is="Component" />
-          </component>
-        </Transition>
-      </Navbar>
-
-      <Transition v-else name="fade" mode="out-in">
+      <Transition name="fade" mode="out-in">
         <component 
           :is="layoutComponent || 'div'" 
-          class="component-without-navbar" 
+          class="component" 
           :key="route.path"
           v-bind="layoutProps"
         >
@@ -36,49 +23,51 @@
 </template>
 
 <script setup lang="ts">
-import Navbar from "./components/Navbar.vue"
 import ProgressAlert from "./components/ProgressAlert.vue";
 import Loader from "./components/Loader.vue"
 
 import { useDarkModeStore } from "./stores/darkStore";
 import { useLoadingStore } from "./stores/loadingStore"
-import { useNavbarStore } from "./stores/navbarStore";
-import { reactive, computed, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { computed, markRaw, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 
 const layoutComponent = ref<null | any>(null);
 const layoutProps = ref<Record<string, any>>({});
 const loadingStore = useLoadingStore();
 const darkModeStore = useDarkModeStore()
-const { getAvailableNavbarRoutes } = useNavbarStore()
 
 const isDarkModeOn = computed(() => darkModeStore.isDarkModeOn)
-const state = reactive({
-  routerLinks: getAvailableNavbarRoutes()
-})
 
 const route = useRoute();
+const router = useRouter();
+
+router.isReady().then(() => updateLayout(route));
+
 watch(
   () => route.path,
-  async () => {
-    if (route.meta?.layout) {
-      try {
-        const module = await route.meta.layout.component();
-        layoutComponent.value = module.default;
-        layoutProps.value = route.meta.layout.props || {};
-      } catch (error) {
-        console.error("Failed to load layout:", error);
-        layoutComponent.value = null;
-        layoutProps.value = {};
-      }
-    } else {
+  () => updateLayout(route),
+  { immediate: false } 
+);
+
+async function updateLayout(currentRoute: typeof route) {
+  loadingStore.showPageLoader = true;
+  if (currentRoute.meta?.layout) {
+    try {
+      const module = await currentRoute.meta.layout.component();
+      layoutComponent.value = markRaw(module.default);
+      layoutProps.value = currentRoute.meta.layout.props || {};
+    } catch (error) {
+      console.error("Erro ao carregar o layout:", error);
       layoutComponent.value = null;
       layoutProps.value = {};
     }
-  },
-  { immediate: true }
-);
+  } else {
+    layoutComponent.value = null;
+    layoutProps.value = {};
+  }
+  loadingStore.showPageLoader = false;
+}
 </script>
 
 <style lang="scss">
@@ -93,5 +82,11 @@ watch(
   align-items: center;
   flex-direction: column;
   margin-top: 16px;
+}
+
+.layout-component {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 </style>

@@ -533,6 +533,8 @@ function iconOrder(header: string) {
 
       tbody {
         tr {
+          line-height: 24px;
+          
           td, th {
             padding: .35rem;
             font-size: 14px;
