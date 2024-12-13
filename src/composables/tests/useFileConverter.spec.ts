@@ -23,21 +23,21 @@ describe('useFileConverter', () => {
   });
 
   it('should set the result after converting CSV to JSON', () => {
-    const { CsvToJson, results } = useFileConverter();
+    const { csvToJson, results } = useFileConverter();
     const file = new File(['name,age\nJohn Doe,30'], 'test.csv', { type: 'text/csv' });
 
     (Papa.parse as Mock).mockImplementationOnce((inputFile: any, options: any) => {
       options.complete(mockParseResult); 
     });
 
-    CsvToJson(file as any);
+    csvToJson(file as any);
     expect(results.value).toStrictEqual(mockParseResult); 
   });
 
   it('should not define results if file is not provided', () => {
-    const { CsvToJson, results } = useFileConverter();
+    const { csvToJson, results } = useFileConverter();
 
-    CsvToJson(null as any); 
+    csvToJson(null as any); 
 
     expect(results.value).toBeUndefined();
   });

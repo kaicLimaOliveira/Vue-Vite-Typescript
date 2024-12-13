@@ -19,14 +19,16 @@
   --grey-400: #e2e2e2;
   --grey-500: #dbdbdb;
   --grey-600: #cecece;
-  --grey-700: #9a9a9a;
-  --grey-800: #7a7a7a;
+  --grey-700: #bfbfbf;
+  --grey-800: #9a9a9a;
+  --grey-900: #7a7a7a;
   
 
   --black-500:#363636;
   --black-600: #343435;
   --black-700: #242427;
   --black-800: #1a1a1e;
+  --black-900: #0d0d0d;
 
   --blue-200: #e7f5f8;
   --blue-300: #d6f8ff;
@@ -84,14 +86,4 @@ body {
 
 .warning {
   background-color: var(--warning);
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.25s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }

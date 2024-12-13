@@ -326,16 +326,6 @@ function resetFields() {
 </script>
 
 <style scoped lang="scss">
-.columns {
-  display: flex;
-  width: 100%;
-  gap: 12px;
-
-  .column {
-    flex: 1;
-  }
-}
-
 .is-danger {
   color: var(--danger-color);
 }

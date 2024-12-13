@@ -4,48 +4,64 @@
     
     <div class="datatable-options">
       <div class="datatable-options-left">
-        <DebounceInput
-          :has-details-icon="true" 
-          :details-label="searchInputDetailsLabel"
-          :details-data="searchInputDetailsData" 
-          :details-position="props.searchInputDetailsPosition"
-          @update:modelValue="state.search = $event"
-        ></DebounceInput>
-
-        <div class="filter">
-          <Icon 
-            icon="filter"
-            @click="emit('filter', true)"
-          ></Icon>
+        <Datepicker range
+        ></DatePicker>
+        
+        <div class="option" @click="state.showFilterModal = true">
+          <Icon icon="filter" />
         </div>
-          
+        
         <div class="show-items" v-if="props.tableOptions?.showItems">
           <Select 
             label="Mostrar"
             v-model="itemsPerPage" 
             :options="state.selectOptions"
             style="width: 70px;"
-          ></Select>
+            ></Select>
         </div>  
       </div>
 
       <div>
         
       </div>
+      
+      <div class="datatable-options-right">
+        <Collapse>
+          <template #header>
+            Seletor de colunas
+          </template>
+          
+          <template #icon>
+            <div class="option">
+              <Icon icon="table-columns" />
+            </div>
+          </template>
 
-      <div class="date-container">
-        <div class="filter" v-if="props.tableOptions?.showExportFileCSV">
-          <Icon 
-            icon="file-csv"
-            @click="jsonToCsv(props.data.value)"
-          ></Icon>
+          <template #content>
+            <div v-for="header, key in props.headers" class="selector-columns">
+              <input type="checkbox" :name="key" v-model="columnsVisibility[key]" />
+              <span>{{ header }}</span>
+            </div>
+          </template>
+        </Collapse>
+        
+        <div 
+          v-if="props.tableOptions?.showExportFileCSV" 
+          @click="jsonToCsv(props.data.value)" 
+          class="option"
+        >
+          <Icon icon="file-csv"  />
         </div>
-
+        
         <!-- <div class="is-flex is-align-items-center" v-if="enableDateFilter"> -->
-          <!-- <DatePicker 
-            :start-date="dateFilterStart" 
-            @update:model-value="state.date = $event"
-          ></DatePicker> -->
+          <DebounceInput
+            :has-details-icon="true" 
+            :details-label="searchInputDetailsLabel"
+            :details-data="searchInputDetailsData" 
+            :details-position="props.searchInputDetailsPosition"
+            @update:modelValue="state.search = $event"
+          ></DebounceInput>
+          
         <!-- </div> -->
       </div>
     </div>
@@ -61,6 +77,7 @@
           <tr>
             <th 
               v-for="header, key in computedHeaders" 
+              v-show="columnsVisibility[key] || key === 'options'"
               @click="() => {
                 if (header === actionHeaderLabel) return 
                 state.orderingField = key
@@ -84,7 +101,7 @@
             <td 
               v-for="row, tdKey in column" 
               :key="tdKey" 
-              v-show="tdKey != 0" 
+              v-show="tdKey != 0 && columnsVisibility[Object.keys(props.headers)[tdKey - 1]]" 
               @click="selectItem((column)[0], 'view')"
             >
               <div 
@@ -136,17 +153,48 @@
     </div>
     
     <Pagination v-model="state.page" :pages="tablePages" />
+
+    <Teleport to="#container">
+      <Modal :open="state.showFilterModal" @close-modal="state.showFilterModal = false">
+        <template #header>
+          Filtro
+        </template>
+        <template #body>
+          <div class="template-body">
+            <div class="columns">
+              <div class="columns">
+                <FormControl label="E"></FormControl>
+              </div>
+              <div class="columns"></div>
+            </div>
+          </div>
+        </template>
+        <template #footer>
+          <Button class="is-danger is-outlined mr-2" @click="state.showFilterModal = false">
+            Cancelar
+          </Button>
+          
+          <Button class="is-primary">
+            Filtrar
+          </Button>
+        </template>
+      </Modal>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
+import Collapse from "../components/Collapse.vue";
 import DebounceInput from "./form/DebounceInput.vue";
+import FormControl from "./form/FormControl.vue";
 import Pagination from "./Pagination.vue";
 import Select from "./form/Select.vue";
 
 import { reactive, computed, watch, onMounted, ref } from "vue";
 import { parseQueryParams } from "../utils/parsers";
 import { useFileConverter } from "../composables/useFileConverter";
+import Datepicker from "./Datepicker.vue";
+
 
 interface TableProps {
   headers: Record<string, string>;
@@ -217,6 +265,8 @@ interface State {
   icon: string;
   iconClicked: string;
   scroll: boolean;
+  showFilterModal: boolean;
+  showSelectColumns: boolean;
 
   selectOptions: {
     label: string;
@@ -233,6 +283,8 @@ const state: State = reactive({
   icon: 'sort',
   iconClicked: '',
   scroll: false,
+  showFilterModal: false,
+  showSelectColumns: false,
   selectOptions: [
     {
       label: '10',
@@ -314,12 +366,36 @@ const list = computed(() => {
   return pagesList
 })
 
+
 const actionHeaderLabel = 'Ações'
 
+const visibleHeaders = reactive<Record<string, boolean>>(
+  Object.keys(props.headers).reduce((acc, key) => {
+    acc[key] = true; 
+    return acc;
+  }, {} as Record<string, boolean>)
+);
+
 const computedHeaders = computed(() => {
-  (props.enableUpdate || props.enableDelete) ? props.headers['options'] = actionHeaderLabel : props.headers
-  return props.headers
-})
+  const headers = Object.keys(props.headers).reduce((acc, key) => {
+    if (visibleHeaders[key]) {
+      acc[key] = props.headers[key];
+    }
+
+    return acc;
+  }, {} as Record<string, string>);
+
+  headers.options = actionHeaderLabel;
+  return headers;
+});
+
+
+const columnsVisibility = reactive<Record<string, boolean>>({
+  ...Object.keys(props.headers).reduce((acc, key) => {
+    acc[key] = true; 
+    return acc;
+  }, {} as Record<string, boolean>),
+});
 
 
 const tablePages = computed(() => {
@@ -407,6 +483,7 @@ watch(
   }
 )
 
+
 function selectItem(id: number | string, emitOption: any) {
   emit('selectedItem', id)
   props.service?.get(id)
@@ -414,6 +491,7 @@ function selectItem(id: number | string, emitOption: any) {
       if (emitOption) emit(emitOption, res)
     })
 }
+
 
 async function queryFilterTable(resetOffset = true) {
   
@@ -429,6 +507,11 @@ async function queryFilterTable(resetOffset = true) {
   }
 
   await props.service?.getMany(parseQueryParams(params));  
+}
+
+
+function showColumns() {
+
 }
 
 
@@ -485,20 +568,31 @@ function iconOrder(header: string) {
       }
     }
 
-    .filter {
-      margin: 0 1rem;
+    .option {
+      margin: 0 .5rem;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       padding: 10px;
       border-radius: 4px;
       cursor: pointer;
+
+      &:last-child {
+        margin: 0 0 0 .5rem;
+      }
 
       &:hover {
         background-color: #ddd;
       }
     }
 
-    .date-container {
+    .datatable-options-right {
       display: flex;
+
+      .selector-columns {
+        display: flex; 
+        align-items: center; 
+        gap: 12px;
+        padding: 8px 0;
+      }
     }
   }
 

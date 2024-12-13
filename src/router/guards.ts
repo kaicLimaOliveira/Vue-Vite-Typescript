@@ -7,7 +7,7 @@ router.beforeEach(async (to, from) => {
   document.title = to.meta.translatedName
   const authStore = useAuthStore()
 
-  // if (to.meta.requiresAuth && !authStore.isLoggedIn) {
-  //   authStore.isLoggedIn = true
-  // }
+  if (to.meta.requiresAuth && !authStore.isLoggedIn) {
+    authStore.isLoggedIn = true
+  }
 })

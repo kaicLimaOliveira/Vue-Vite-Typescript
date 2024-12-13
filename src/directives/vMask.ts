@@ -79,7 +79,19 @@ export default {
     el._formatInput = formatInput;
   },
   updated(el: CustomInputElement, binding: DirectiveBinding<string>) {
-    el._formatInput = closure({ el, binding });
+    if (el._formatInput) {
+      el.removeEventListener('input', el._formatInput);
+    }
+  
+    if (binding.value !== binding.oldValue) {
+      el.value = '';
+      const clearEvent = new Event('input', { bubbles: true });
+      el.dispatchEvent(clearEvent); 
+    }
+  
+    const formatInput = closure({ el, binding });
+    el.addEventListener('input', formatInput);
+    el._formatInput = formatInput;
   },
   beforeUnmount(el: CustomInputElement) {
     if (el._formatInput) el.removeEventListener('input', el._formatInput);

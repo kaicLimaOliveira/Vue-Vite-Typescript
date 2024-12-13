@@ -7,7 +7,7 @@
           <p class="modal-card-title">
             <slot name="header"></slot>
           </p>
-          <Icon icon="xmark" class="modal-close" @click="emit('close-modal')" />
+          <Icon icon="xmark" size="1x" class="modal-close" @click="emit('close-modal')" />
         </header>
 
         <section class="modal-card-body">
@@ -101,12 +101,8 @@ const props = withDefaults(defineProps<ModalProps>(), {
       .modal-close {
         background: none;
         border: none;
-        font-size: 1.5rem;
         line-height: 1;
         cursor: pointer;
-        position: absolute;
-        top: 0.75rem;
-        right: 0.75rem;
 
         &:hover {
           color: var(--primary-color);

@@ -31,10 +31,14 @@ const attrs = useAttrs();
     border-radius: 4px;
     padding: 8px 12px;
     width: 100%;
-    transition: border-color 0.2s;
+    transition: border-color .2s;
     font-size: 14px;
     font-weight: 500;
     font-family: 'Montserrat';
+
+    &:hover {
+      border-color: var(--grey-700);
+    }
 
     &:focus {
       /* border-color: #00d1b2; */

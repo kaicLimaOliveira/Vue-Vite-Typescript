@@ -1,8 +1,7 @@
 <template>
   <div>
-    <FormControl label="CPF:" v-model="state.cpf" v-mask="'###.###.###-##'" />
-    <!-- <FormControl label="Placa:" v-model="state.carPlate" v-mask="'AAA #A##'" />
-    <FormControl label="Telefone:" v-model="state.number" v-mask="'(##) # ####-####'" /> -->
+    <FormControl :label="state.toggle ? 'CPF': 'Placa'" v-model="state.cpf" v-mask="state.toggle ? '###.###.###-##' : '###-###'" />
+    <Button @click="toggle">Trocar mascara</Button>
   </div>
 </template>
 
@@ -13,8 +12,11 @@ import FormControl from '../components/form/FormControl.vue';
 
 const state = reactive({
   cpf: "",
-  carPlate: "",
-  number: "",
   toggle: true,
 })
+
+const toggle = () => {
+  state.toggle = !state.toggle
+  state.cpf = ""
+}
 </script>

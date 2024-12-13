@@ -465,3 +465,13 @@
 .pb-10 {
   padding-bottom: 3rem;
 }
+
+.columns {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+
+  .column {
+    flex: 1;
+  }
+}
