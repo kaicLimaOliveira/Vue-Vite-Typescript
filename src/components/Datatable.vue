@@ -4,9 +4,14 @@
     
     <div class="datatable-options">
       <div class="datatable-options-left">
-        <Datepicker range
-        ></DatePicker>
-        
+        <DebounceInput
+          :has-details-icon="true" 
+          :details-label="searchInputDetailsLabel"
+          :details-data="searchInputDetailsData" 
+          :details-position="props.searchInputDetailsPosition"
+          @update:modelValue="state.search = $event"
+        ></DebounceInput>
+
         <div class="option" @click="state.showFilterModal = true">
           <Icon icon="filter" />
         </div>
@@ -53,16 +58,10 @@
           <Icon icon="file-csv"  />
         </div>
         
-        <!-- <div class="is-flex is-align-items-center" v-if="enableDateFilter"> -->
-          <DebounceInput
-            :has-details-icon="true" 
-            :details-label="searchInputDetailsLabel"
-            :details-data="searchInputDetailsData" 
-            :details-position="props.searchInputDetailsPosition"
-            @update:modelValue="state.search = $event"
-          ></DebounceInput>
-          
-        <!-- </div> -->
+        <Datepicker 
+          range 
+          :max-range-days="7"
+        ></DatePicker>
       </div>
     </div>
     
@@ -191,7 +190,7 @@ import Pagination from "./Pagination.vue";
 import Select from "./form/Select.vue";
 
 import { reactive, computed, watch, onMounted, ref } from "vue";
-import { parseQueryParams } from "../utils/parsers";
+import { parseQueryParams } from "../utils/helpers/parsers";
 import { useFileConverter } from "../composables/useFileConverter";
 import Datepicker from "./Datepicker.vue";
 

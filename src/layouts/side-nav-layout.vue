@@ -240,8 +240,9 @@ function toggleSideBar() {
  
 main {
   overflow: auto;
+  overflow-x: hidden;
   scrollbar-width: thin;
-
+  padding: 20px 20px 35px 20px;
   height: 100%;
 }
  

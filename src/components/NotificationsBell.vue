@@ -82,8 +82,8 @@ import { useRouter } from "vue-router";
 import { useNotificationStore } from "../stores/notificationStore"
 import { useAlertStore } from "../stores/alertStore";
 
-import { dateHistoryMask, phraseDotsMask } from "../utils/masks";
-import { parseQueryParams } from "../utils/parsers";
+import { dateHistoryMask, phraseDotsMask } from "../utils/helpers/masks";
+import { parseQueryParams } from "../utils/helpers/parsers";
 import NotificationService from "../server/api/notification";
 
 

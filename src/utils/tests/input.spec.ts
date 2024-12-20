@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
-import { throttle, debounce } from '../inputs';
+import { throttle, debounce } from '../helpers/inputs';
 
 describe('Utility Functions', () => {
   let callback: Mock;

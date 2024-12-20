@@ -88,7 +88,7 @@
         </template>
         <template #footer>
           <Button class="is-danger is-outlined mr-2" @click="state.showDeleteModal = false">
-            Cancelar
+            {{ $translate('components.button.cancel') }}
           </Button>
           
           <Button 
@@ -96,7 +96,7 @@
             :loading="state.isLoadingButton"
             @click="deleteUser(user.id)"
           >
-            Confirmar
+            {{ $translate('components.button.confirm') }}            
           </Button>
         </template>
       </Modal>
@@ -108,15 +108,14 @@
 import CrudModal from '../components/modals/CrudModal.vue';
 import Datatable from '../components/Datatable.vue';
 import FormControl from '../components/form/FormControl.vue';
+import ViewHeader from '../components/ViewHeader.vue';
 
-import { computed, reactive } from 'vue';
+import { reactive } from 'vue';
 import { User } from '../interfaces/User';
 import { StateView } from '../interfaces/Generic';
 
 import { useUserService } from '../server/api/user';
 import { useAlertStore } from '../stores/alertStore';
-import ViewHeader from '../components/ViewHeader.vue';
-
 
 const alertStore = useAlertStore();
 

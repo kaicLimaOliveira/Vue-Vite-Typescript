@@ -1,0 +1,15 @@
+{
+  "routes": {
+    "users": "Users"
+  },
+  "components": {
+    "button": {
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "close": "Close",
+      "register": "Register",
+      "save": "Save",
+      "delete": "Delete"
+    }
+  }
+}

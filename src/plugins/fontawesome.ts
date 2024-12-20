@@ -28,8 +28,10 @@ import {
     faXmark,
     faFileCsv,
     faTableColumns,
-    faChevronRight,
-    faChevronLeft,
+    faAngleLeft,
+    faAngleRight,
+    faAnglesLeft,
+    faAnglesRight,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -59,6 +61,8 @@ library.add(
     faXmark,
     faFileCsv,
     faTableColumns,
-    faChevronRight,
-    faChevronLeft,
+    faAngleLeft,
+    faAngleRight,
+    faAnglesLeft,
+    faAnglesRight,
 );

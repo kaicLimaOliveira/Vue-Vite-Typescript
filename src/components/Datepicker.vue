@@ -9,15 +9,15 @@
         readonly
         :value="formattedInputValue"
         @click="toggleCalendar"
-        :placeholder="props.range ? 'Select a date range' : 'Select a date'"
+        :placeholder="props.placeholder"
       />
       
       <div v-if="state.isCalendarOpen" class="datepicker">
         <div class="datepicker-content">
           <div class="datepicker-header">
-            <Icon icon="chevron-left" @click="prevMonth"></Icon>
+            <Icon icon="angle-left" @click="prevMonth"></Icon>
             <span>{{ firstCalendarformattedMonthYear }}</span>
-            <Icon icon="chevron-right" @click="nextMonth"></Icon>
+            <Icon icon="angle-right" @click="nextMonth"></Icon>
           </div>
   
           <div class="datepicker-grid">
@@ -42,9 +42,9 @@
         
         <div class="datepicker-content" v-if="props.range">
           <div class="datepicker-header">
-            <Icon icon="chevron-left" @click="prevMonth"></Icon>
+            <Icon icon="angle-left" @click="prevMonth"></Icon>
             <span>{{ secondCalendarformattedMonthYear }}</span>
-            <Icon icon="chevron-right" @click="nextMonth"></Icon>
+            <Icon icon="angle-right" @click="nextMonth"></Icon>
           </div>
     
           <div  class="datepicker-grid">
@@ -53,8 +53,14 @@
               class="day"
               v-for="day, key in secondCalendarDays"
               :key="key"
-              :class="{ 'is-today': day.isToday, 'is-selected': isSelected(day.date) }"
-              @click="selectDate(day.date, true)"
+              :class="{ 
+                'is-today': day.isToday, 
+                'is-selected': isSelected(day.date),
+                'is-start': isSelected(day.date) === 'is-start',
+                'is-end': isSelected(day.date) === 'is-end',
+                'is-outside-month': day.isCurrentMonth
+              }"
+              @click="selectDate(day.date)"
             >
               {{ day.date.getDate() }}
             </div>
@@ -80,34 +86,38 @@ interface DatepickerProps {
   range?: boolean;
   localeFormat?: Intl.LocalesArgument;
   daysOfWeek?: string[];
+  maxRangeDays?: number | null;
+  placeholder?: string;
 }
 
 const props = withDefaults(defineProps<DatepickerProps>(), {
   localeFormat: 'pt-BR',
   daysOfWeek: () => ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'],
+  placeholder: 'Selecione a data'
 })
 
 interface State {
   isCalendarOpen: boolean;
+  selectedDate: Date | null;
+  secondSelectedDate: Date | null;
+  currentDate: Date;
 }
 
 const state: State = reactive({
   isCalendarOpen: false,
+  selectedDate: null,
+  secondSelectedDate: null,
+  currentDate: new Date(),
 })
 
-const selectedDate = ref<Date | null>(null);
-const secondSelectedDate = ref<Date | null>(null);
-const currentDate = ref(new Date());
 const secondCalendarDate = ref(
-  new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() + 1, 1)
+  new Date(state.currentDate.getFullYear(), state.currentDate.getMonth() + 1, 1)
 );
 
-const toggleCalendar = () => {
-  state.isCalendarOpen = !state.isCalendarOpen;
-};
+const toggleCalendar = () => state.isCalendarOpen = !state.isCalendarOpen;
 
 const firstCalendarformattedMonthYear = computed(() => {
-  return currentDate.value.toLocaleDateString(props.localeFormat, {
+  return state.currentDate.toLocaleDateString(props.localeFormat, {
     year: 'numeric',
     month: 'long',
   });
@@ -121,10 +131,15 @@ const secondCalendarformattedMonthYear = computed(() => {
 });
 
 const formattedInputValue = computed(() => {
-  if (props.range && selectedDate.value && secondSelectedDate.value) {
-    return `${selectedDate.value.toLocaleDateString()} - ${secondSelectedDate.value.toLocaleDateString()}`;
+  if (props.range && state.selectedDate && state.secondSelectedDate) {
+    const [startDate, endDate] = state.selectedDate <= state.secondSelectedDate
+      ? [state.selectedDate, state.secondSelectedDate]
+      : [state.secondSelectedDate, state.selectedDate];
+
+    return `${startDate.toLocaleDateString(props.localeFormat)} - ${endDate.toLocaleDateString(props.localeFormat)}`;
   }
-  return selectedDate.value ? selectedDate.value.toLocaleDateString() : '';
+  
+  return state.selectedDate ? state.selectedDate.toLocaleDateString(props.localeFormat) : '';
 });
 
 const generateCalendarDays = (date: Date) => {
@@ -183,32 +198,39 @@ const generateCalendarDays = (date: Date) => {
   return days;
 };
 
-const calendarDays = computed(() => generateCalendarDays(currentDate.value));
-const secondCalendarDays = computed(() =>
-  generateCalendarDays(secondCalendarDate.value)
-);
+const calendarDays = computed(() => generateCalendarDays(state.currentDate));
+const secondCalendarDays = computed(() => generateCalendarDays(secondCalendarDate.value));
 
-const selectDate = (date: Date, isSecondCalendar = false) => {
+const selectDate = (date: Date) => {
   if (props.range) {
-    if (!selectedDate.value || secondSelectedDate.value) {
-      selectedDate.value = date;
-      secondSelectedDate.value = null;
+    if (!state.selectedDate) {
+      state.selectedDate = date;
+    } else if (!state.secondSelectedDate) {
+      const start = new Date(Math.min(state.selectedDate.getTime(), date.getTime()));
+      const end = new Date(Math.max(state.selectedDate.getTime(), date.getTime()));
+
+      // Calcular a diferença de dias
+      const diffDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+
+      // Validar o limite, se definido
+      if (props.maxRangeDays && diffDays > props.maxRangeDays) {
+        return;
+      }
+
+      state.secondSelectedDate = date;
     } else {
-      secondSelectedDate.value = date;
+      state.selectedDate = date;
+      state.secondSelectedDate = null;
     }
   } else {
-    selectedDate.value = date;
-  }
-
-  if (!props.range) {
-    state.isCalendarOpen = false;
+    state.selectedDate = date;
   }
 };
 
 const isSelected = (date: Date) => {
   if (props.range) {
-    const first = selectedDate.value;
-    const second = secondSelectedDate.value;
+    const first = state.selectedDate;
+    const second = state.secondSelectedDate;
     if (first && second) {
       const start = new Date(Math.min(first.getTime(), second.getTime()));
       const end = new Date(Math.max(first.getTime(), second.getTime()));
@@ -218,15 +240,15 @@ const isSelected = (date: Date) => {
       if (date >= start && date <= end) return 'is-selected';
     }
   }
-  return date.toDateString() === selectedDate.value?.toDateString()
+  return date.toDateString() === state.selectedDate?.toDateString()
     ? 'is-selected'
     : '';
 };
 
 const prevMonth = () => {
-  currentDate.value = new Date(
-    currentDate.value.getFullYear(),
-    currentDate.value.getMonth() - 1,
+  state.currentDate = new Date(
+    state.currentDate.getFullYear(),
+    state.currentDate.getMonth() - 1,
     1
   );
   if (props.range) {
@@ -239,9 +261,9 @@ const prevMonth = () => {
 };
 
 const nextMonth = () => {
-  currentDate.value = new Date(
-    currentDate.value.getFullYear(),
-    currentDate.value.getMonth() + 1,
+  state.currentDate = new Date(
+    state.currentDate.getFullYear(),
+    state.currentDate.getMonth() + 1,
     1
   );
   if (props.range) {
@@ -250,6 +272,26 @@ const nextMonth = () => {
       secondCalendarDate.value.getMonth() + 1,
       1
     );
+  }
+};
+
+const prevYear = () => {
+  if (state.selectedDate) {
+    state.selectedDate = new Date(state.selectedDate.setFullYear(state.selectedDate.getFullYear() - 1));
+  }
+
+  if (props.range && state.secondSelectedDate) {
+    state.secondSelectedDate = new Date(state.secondSelectedDate.setFullYear(state.secondSelectedDate.getFullYear() - 1));
+  }
+};
+
+const nextYear = () => {
+  if (state.selectedDate) {
+    state.selectedDate = new Date(state.selectedDate.setFullYear(state.selectedDate.getFullYear() + 1));
+  }
+
+  if (props.range && state.secondSelectedDate) {
+    state.secondSelectedDate = new Date(state.secondSelectedDate.setFullYear(state.secondSelectedDate.getFullYear() + 1));
   }
 };
 </script>
@@ -271,7 +313,7 @@ const nextMonth = () => {
 .datepicker {
   position: absolute;
   top: 100%;
-  left: 0;
+  left: -200%;
   z-index: 9999;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -312,7 +354,7 @@ const nextMonth = () => {
     .day-name {
       text-align: center;
       padding: 8px 4px;
-      color: var();
+      color: var(--grey-800);
       font-weight: 500;
     }
 

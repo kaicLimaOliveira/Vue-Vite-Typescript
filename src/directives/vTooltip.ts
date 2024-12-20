@@ -87,8 +87,9 @@ function calculatePosition(element: HTMLElement, tooltip: HTMLElement): Position
 }
 
 function applyTooltipPosition(tooltip: HTMLElement, element: HTMLElement, position: Position) {
-  const rect = element.getBoundingClientRect();
+  const targetRect = element.getBoundingClientRect();
   tooltip.style.left = tooltip.style.top = tooltip.style.right = tooltip.style.bottom = "";
+  const tooltipRect = tooltip.getBoundingClientRect()
   
   switch (position) {
     case Position.Left:
@@ -100,12 +101,12 @@ function applyTooltipPosition(tooltip: HTMLElement, element: HTMLElement, positi
       tooltip.style.bottom = `20px`;
       break;
     case Position.Top:
-      tooltip.style.top = `${rect.top - tooltip.offsetHeight - TOOLTIP_MARGIN}px`;
-      tooltip.style.left = `${rect.left + rect.width / 2 - tooltip.offsetWidth / 2}px`;
+      tooltip.style.top = `${targetRect.top - tooltipRect.height - 8}px`;
+      tooltip.style.left = `${targetRect.left + targetRect.width / 2 - tooltipRect.width / 22}px`;
       break;
     case Position.Bottom:
-      tooltip.style.top = `${rect.bottom + TOOLTIP_MARGIN}px`;
-      tooltip.style.left = `${rect.left + rect.width / 2 - tooltip.offsetWidth / 2}px`;
+      tooltip.style.top = `${targetRect.bottom + 8}px`;
+      tooltip.style.left = `${targetRect.left + targetRect.width / 2 - tooltipRect.width / 2}px`;
       break;
   }
 }

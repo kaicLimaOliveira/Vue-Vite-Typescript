@@ -53,6 +53,7 @@ const handleClick = () => {
   border: .5px solid #d6d9e0;
   font-weight: 500;
   height: 40px;
+  font-family: 'Montserrat', sans-serif;
 
   &:hover:not(:disabled) {
     filter: brightness(90%);

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <FormControl :label="state.toggle ? 'CPF': 'Placa'" v-model="state.cpf" v-mask="state.toggle ? '###.###.###-##' : '###-###'" />
+    <FormControl v-tooltip.top="'teste'" :label="state.toggle ? 'CPF': 'Placa'" v-model="state.cpf" v-mask="state.toggle ? '###.###.###-##' : '###-###'" />
     <Button @click="toggle">Trocar mascara</Button>
   </div>
 </template>

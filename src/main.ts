@@ -15,11 +15,13 @@ import Input from './components/form/Input.vue';
 import Button from './components/Button.vue';
 import Modal from './components/modals/Modal.vue';
 import Select from './components/form/Select.vue';
+import i18n from './plugins/i18n';
 
 
 const pinia = createPinia();
 const app = createApp(App);
 
+// Components
 app.component('Icon', FontAwesomeIcon);
 app.component('Input', Input);
 app.component('Button', Button);
@@ -33,4 +35,5 @@ app.directive('tooltip', vTooltip);
 
 app.use(pinia);
 app.use(router);
+app.use(i18n, 'pt');
 app.mount('#app');

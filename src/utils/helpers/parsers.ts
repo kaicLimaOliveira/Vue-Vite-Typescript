@@ -1,6 +1,4 @@
-import { Generic } from "../interfaces/Generic"
-
-function parseQueryParams(params:Generic<any>): string {
+function parseQueryParams(params: Record<string, any>): string {
   let query = '' 
 
   Object.entries(params).forEach(([key, val]) => {

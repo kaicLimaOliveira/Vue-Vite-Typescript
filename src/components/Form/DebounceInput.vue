@@ -28,7 +28,7 @@
 </template>
     
 <script setup lang="ts">
-import { debounce } from '../../utils/inputs';
+import { debounce } from '../../utils/helpers/inputs';
 
 const emit = defineEmits<{
   'update:modelValue': [value: string];
