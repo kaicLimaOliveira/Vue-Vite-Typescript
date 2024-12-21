@@ -2,10 +2,12 @@ import { createApp } from 'vue';
 import App from './App.vue';
 
 import { createPinia } from 'pinia';
-import router from './router/routes';
 
+import router from './router/routes';
 import './router/guards';
+
 import './plugins/fontawesome';
+import i18n from './plugins/i18n';
 
 import vMask from './directives/vMask';
 import vTooltip from './directives/vTooltip';
@@ -15,7 +17,6 @@ import Input from './components/form/Input.vue';
 import Button from './components/Button.vue';
 import Modal from './components/modals/Modal.vue';
 import Select from './components/form/Select.vue';
-import i18n from './plugins/i18n';
 
 
 const pinia = createPinia();
@@ -32,7 +33,7 @@ app.component('Select', Select);
 app.directive('mask', vMask);
 app.directive('tooltip', vTooltip);
 
-
+// plugins
 app.use(pinia);
 app.use(router);
 app.use(i18n, 'pt');

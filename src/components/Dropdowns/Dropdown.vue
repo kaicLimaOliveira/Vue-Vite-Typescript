@@ -53,7 +53,7 @@
  
 <script setup lang="ts">
 import { reactive, watch } from 'vue';
-import { Link } from '../../interfaces/Menu';
+import { Link } from '../../interfaces/components/Menu';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
  
  

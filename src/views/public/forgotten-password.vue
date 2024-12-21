@@ -19,8 +19,8 @@
 </template>
 
 <script setup lang="ts">
-import Button from '../components/Button.vue';
-import FormControl from '../components/form/FormControl.vue';
+import Button from '../../components/Button.vue';
+import FormControl from '../../components/form/FormControl.vue';
 
 import { reactive } from 'vue';
 

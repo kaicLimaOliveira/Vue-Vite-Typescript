@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import ForgottenPassword from '../forgotten-password.vue'
-import FormControl from '../../components/Form/FormControl.vue';
-import Button from '../../components/Button.vue';
+import FormControl from '../../../components/form/FormControl.vue';
+import Button from '../../../components/Button.vue';
 
 describe('forgotten-password.vue', () => {
   it('should render componente correctly', () => {

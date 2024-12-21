@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Notification } from "../interfaces/Notification";
+import { Notification } from "../interfaces/api/Notification";
 
 interface State {
   connection: WebSocket | null;

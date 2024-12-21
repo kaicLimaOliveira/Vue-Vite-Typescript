@@ -2,7 +2,7 @@
   <div class="login">
     <div class="login-column-image">
       <figure>
-        <img src="../assets/imgs/organizer.svg" width="500" alt="GPA image" />
+        <img src="../assets/imgs/svgs/organizer.svg" width="500" alt="GPA image" />
       </figure>
     </div>
 

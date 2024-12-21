@@ -1,7 +1,7 @@
 <template>
   <div class="not-found">
     <div class="not-found-image">
-      <img src="../assets/imgs/notfound.svg" alt="Not found image" width="400" />
+      <img src="../assets/imgs/svgs/notfound.svg" alt="Not found image" width="400" />
     </div>
     <span>Página não encontrada</span>
 

@@ -1,43 +1,20 @@
 .tooltip {
   position: absolute;
   max-width: 20rem;
-  width: 16rem;
+  width: fit-content;
   z-index: 1;
-  border-radius: 0.25rem;
+  border-radius: 0.3rem;
   background-color: #ffffff;
   color: #000000;
   padding: 0.75rem;
   font-size: 0.875rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
   opacity: 0; 
-  transition: opacity 0.5s ease-in; 
+  transition: opacity 0.2s ease-in-out; 
+  font-family: 'Montserrat', sans-serif;
 
   &.fade-in {
     opacity: 1; 
-    z-index: 50;
+    z-index: 1000;
   }
-
-  @media (min-width: 640px) {
-    width: 18rem;
-  }
-}
-
-.left-10 {
-  left: 10rem; 
-}
-
-.-left-32 {
-  left: -32rem; 
-}
-
-.top-1 {
-  top: 1.3rem;
-}
-
-.-top-4 {
-  top: -3.4rem; 
-}
-
-.-top-8 {
-  top: -8rem; 
 }

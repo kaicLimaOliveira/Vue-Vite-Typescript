@@ -105,17 +105,17 @@
 </template>
 
 <script setup lang="ts">
-import CrudModal from '../components/modals/CrudModal.vue';
-import Datatable from '../components/Datatable.vue';
-import FormControl from '../components/form/FormControl.vue';
-import ViewHeader from '../components/ViewHeader.vue';
+import CrudModal from '../../components/modals/CrudModal.vue';
+import Datatable from '../../components/Datatable.vue';
+import FormControl from '../../components/form/FormControl.vue';
+import ViewHeader from '../../components/ViewHeader.vue';
 
 import { reactive } from 'vue';
-import { User } from '../interfaces/User';
-import { StateView } from '../interfaces/Generic';
+import { User } from '../../interfaces/api/User';
+import { StateView } from '../../interfaces/Generic';
 
-import { useUserService } from '../server/api/user';
-import { useAlertStore } from '../stores/alertStore';
+import { useUserService } from '../../server/api/user';
+import { useAlertStore } from '../../stores/alertStore';
 
 const alertStore = useAlertStore();
 
@@ -176,7 +176,7 @@ async function getUsers(params = '') {
   try {
     state.isLoading = true;
     
-    const { error, result } = await state.service.getUsers(params);
+    const { error, result }: any = await state.service.getUsers(params);
     console.log(result);
     
     state.tableProps.tableLength = result.total;

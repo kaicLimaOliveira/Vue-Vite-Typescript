@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Dropdown, Link, Menu } from "../interfaces/Menu";
+import { Dropdown, Link, Menu } from "../interfaces/components/Menu";
 import { useRouter } from "vue-router";
 
 export const useNavbarStore = defineStore('navbar', {

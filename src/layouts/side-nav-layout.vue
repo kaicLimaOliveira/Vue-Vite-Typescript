@@ -14,8 +14,7 @@
               v-if="route.type == 'link'"
               class="router-link"
               :to="{ name: route.routeName, params }"
-              :title="label"
-              v-tooltip="label"
+              v-tooltip.right="label"
             >
               <Icon v-if="icon" :icon class="router-link-icon" size="sm" />
               <span>
@@ -63,7 +62,7 @@ import DropdownHover from "../components/dropdowns/DropdownHover.vue";
 import NotificationsBell from "../components/NotificationsBell.vue";
  
 import { reactive, ref } from "vue";
-import { Menu } from "../interfaces/Menu"
+import { Menu } from "../interfaces/components/Menu"
 import { useDarkModeStore } from "../stores/darkStore";
 import { useRouter } from "vue-router";
 import { useNavbarStore } from "../stores/navbarStore";

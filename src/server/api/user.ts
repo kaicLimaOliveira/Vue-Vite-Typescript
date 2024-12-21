@@ -1,6 +1,6 @@
 import { useFetch } from "../../composables/useFetch";
 import { HttpResponse } from "../../interfaces/Http";
-import { User } from "../../interfaces/User";
+import { User } from "../../interfaces/api/User";
 import { useLoadingStore } from "../../stores/loadingStore";
 
 export function useUserService() {

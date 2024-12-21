@@ -37,13 +37,13 @@
 </template>
 
 <script setup lang="ts">
-import FormControl from '../components/form/FormControl.vue';
-import Label from '../components/form/Label.vue';
+import FormControl from '../../components/form/FormControl.vue';
+import Label from '../../components/form/Label.vue';
 
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router'
-import { useAuthenticationService } from '../server/api/authentication'
-import { useLoadingStore } from '../stores/loadingStore';
+import { useAuthenticationService } from '../../server/api/authentication'
+import { useLoadingStore } from '../../stores/loadingStore';
 
 interface State {
   showPassword: boolean;

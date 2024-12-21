@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import NotFound from '../not-found.vue';
 import { createRouter, createWebHistory } from 'vue-router';
+import NotFound from '../not-found.vue';
 
 // Mock do roteador
 const router = createRouter({
