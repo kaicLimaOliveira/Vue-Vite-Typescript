@@ -11,7 +11,6 @@
           :is="layoutComponent || 'div'" 
           class="component" 
           :key="route.path"
-          v-bind="layoutProps"
         >
           <component :is="Component" />
         </component>
@@ -33,7 +32,6 @@ import { useRoute, useRouter } from "vue-router";
 
 
 const layoutComponent = ref<null | any>(null);
-const layoutProps = ref<Record<string, any>>({});
 const loadingStore = useLoadingStore();
 const darkModeStore = useDarkModeStore()
 
@@ -54,27 +52,21 @@ async function updateLayout(currentRoute: typeof route) {
   loadingStore.showPageLoader = true;
   if (currentRoute.meta?.layout) {
     try {
-      const module = await currentRoute.meta.layout.component();
+      const module = await currentRoute.meta.layout();
       layoutComponent.value = markRaw(module.default);
-      layoutProps.value = currentRoute.meta.layout.props || {};
     } catch (error) {
       console.error("Erro ao carregar o layout:", error);
       layoutComponent.value = null;
-      layoutProps.value = {};
     }
   } else {
     layoutComponent.value = null;
-    layoutProps.value = {};
   }
   loadingStore.showPageLoader = false;
 }
 </script>
 
 <style lang="scss">
-@import './assets/styles/scss/globals.scss';
-@import './assets/styles/scss/tooltip.scss';
-@import './assets/styles/scss/helpers.scss';
-@import './assets/styles/scss/dark-theme.scss';
+@use './assets/styles/scss/globals.scss';
 
 .alert {
   position: absolute;

@@ -1,0 +1,41 @@
+:root {
+  --info: hsl(204, 86%, 53%);
+  --link: #dc3545;
+  --error: rgb(241, 70, 104);
+  --warning: hsl(44deg, 100%, 77%);
+  --success: rgb(76, 230, 145);
+
+  --primary-color: #6c63ff;
+  
+  
+  --link-color: #3273dc;
+  --info-color: #209cee;
+  --success-color: #23d160;
+  --warning-color: #ffdd57;
+  --danger-color: #ff3860;
+  
+  --grey-200: #f1f1f1;
+  --grey-300: #efefef;
+  --grey-400: #e2e2e2;
+  --grey-500: #dbdbdb;
+  --grey-600: #cecece;
+  --grey-700: #bfbfbf;
+  --grey-800: #9a9a9a;
+  --grey-900: #7a7a7a;
+  
+
+  --black-500:#363636;
+  --black-600: #343435;
+  --black-700: #242427;
+  --black-800: #1a1a1e;
+  --black-900: #0d0d0d;
+
+  --blue-200: #e7f5f8;
+  --blue-300: #d6f8ff;
+  --blue-400: #00c0e8;
+  --blue-500: #19b5c9;
+
+  //  dark mode
+  --dark-background: #222225;
+  --dark-text: #a9a9b2;
+}

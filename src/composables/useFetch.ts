@@ -1,8 +1,9 @@
 import { ref } from 'vue';
 import axios, { AxiosError } from 'axios';
+import { env } from '../utils/configs/env';
 
 
-export function useFetch(baseURL: string = import.meta.env.VITE_API_URL) {
+export function useFetch(baseURL: string = env.VITE_API_URL) {
   const result = ref();            
   const loading = ref(false);            
   const error = ref<AxiosError | null>(null);        
@@ -13,6 +14,7 @@ export function useFetch(baseURL: string = import.meta.env.VITE_API_URL) {
 			Accept: "application/json",
 			'Content-Type': "application/json",
 		},
+    withCredentials: true,
 	})
 
   const fetchData = async (method: string, url: string, data?: object, contentType = 'application/json') => {

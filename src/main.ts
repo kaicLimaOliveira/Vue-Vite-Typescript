@@ -1,40 +1,22 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 
-import { createPinia } from 'pinia';
-
-import router from './router/routes';
 import './router/guards';
+import './utils/configs/fontawesome';
 
-import './plugins/fontawesome';
-import i18n from './plugins/i18n';
+import globalComponents from './utils/configs/globalComponents';
+import globalDirectives from './utils/configs/globalDirectives';
+import globalPlugins from './utils/configs/globalPlugins';
 
-import vMask from './directives/vMask';
-import vTooltip from './directives/vTooltip';
-
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import Input from './components/form/Input.vue';
-import Button from './components/Button.vue';
-import Modal from './components/modals/Modal.vue';
-import Select from './components/form/Select.vue';
-
-
-const pinia = createPinia();
 const app = createApp(App);
 
 // Components
-app.component('Icon', FontAwesomeIcon);
-app.component('Input', Input);
-app.component('Button', Button);
-app.component('Modal', Modal);
-app.component('Select', Select);
+app.use(globalComponents);
 
 // Directives
-app.directive('mask', vMask);
-app.directive('tooltip', vTooltip);
+app.use(globalDirectives);
 
 // plugins
-app.use(pinia);
-app.use(router);
-app.use(i18n, 'pt');
+app.use(globalPlugins);
+
 app.mount('#app');

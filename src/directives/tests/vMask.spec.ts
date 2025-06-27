@@ -1,5 +1,4 @@
 import { describe, it, expect, vi } from "vitest";
-import { mount } from "@vue/test-utils";
 import { DirectiveBinding } from "vue";
 import MaskDirective from "../vMask"; 
 
@@ -8,7 +7,7 @@ interface TestElement extends HTMLInputElement {
 }
 
 describe("MaskDirective", () => {
-  it("aplica a máscara no evento 'input'", () => {
+  it("should applies the mask to the 'input' event", () => {
     const el = document.createElement("input") as TestElement;
     const binding = { value: "###-###" } as DirectiveBinding<string>;
 
@@ -20,7 +19,7 @@ describe("MaskDirective", () => {
     expect(el.value).toBe("123-456");
   });
 
-  it("atualiza a máscara no hook 'updated'", () => {
+  it("should update the mask in the 'updated' hook", () => {
     const el = document.createElement("input") as TestElement;
     const initialBinding = { value: "###-###" } as DirectiveBinding<string>;
     const updatedBinding = { value: "##-##-##" } as DirectiveBinding<string>;
@@ -40,7 +39,7 @@ describe("MaskDirective", () => {
     expect(el.value).toBe("12-34-56");
   });
 
-  it("remove o listener no hook 'beforeUnmount'", () => {
+  it("should remove the listener in the 'beforeUnmount' hook", () => {
     const el = document.createElement("input") as TestElement;
     const binding = { value: "###-###" } as DirectiveBinding<string>;
 
@@ -52,7 +51,7 @@ describe("MaskDirective", () => {
     expect(removeEventListenerSpy).toHaveBeenCalledWith("input", el._formatInput);
   });
 
-  it("dispara o evento 'input' após aplicar a máscara", () => {
+  it("should fires the 'input' event after applying the mask", () => {
     const el = document.createElement("input") as TestElement;
     const binding = { value: "###-###" } as DirectiveBinding<string>;
 
